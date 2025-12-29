@@ -18,7 +18,21 @@ class QuestCompletion extends Model
         'xp_earned',
         'completed_at',
         'notes',
-        'timestamps',
-        'Field',
-    ]
+    ];
+
+    protected $casts = [
+        'completed_at' => 'datetime',
+        'xp_earned' => 'integer',
+    ];
+
+    public function quest()
+    {
+        return $this->belongsTo(Quest::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    
 }
