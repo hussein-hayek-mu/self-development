@@ -126,7 +126,8 @@ function simulateLogin() {
   document.getElementById("appContainer").style.display = "flex";
   setTimeout(() => {
     document.getElementById("appContainer").classList.add("visible");
-    startJourney();
+    // Auto-navigate to landing/home page instead of dashboard
+    navigateTo("landing");
   }, 100);
 }
 
@@ -452,11 +453,32 @@ function closeLevelUp() {
 // Chat
 function sendChatMessage(msg) {
   const chat = document.getElementById("chatMessages");
-  chat.innerHTML += `<div class="chat-message"><strong>You:</strong> ${msg}</div>`;
+  chat.innerHTML += `<div class="chat-message" style="background: rgba(59, 130, 246, 0.1); border-left: 3px solid var(--accent-blue);"><strong style="color: var(--accent-blue);">You:</strong> ${msg}</div>`;
   setTimeout(() => {
-    chat.innerHTML += `<div class="chat-message"><strong>AI Coach:</strong> Good idea! Let's get it done.</div>`;
+    chat.innerHTML += `<div class="chat-message" style="background: rgba(168, 85, 247, 0.15); border-left: 3px solid var(--accent-purple);"><strong style="color: var(--accent-purple);">AI Coach:</strong> Good idea! Let's get it done.</div>`;
     chat.scrollTop = chat.scrollHeight;
   }, 800);
+}
+
+// Sidebar Collapse/Expand with Drag
+let sidebarCollapsed = false;
+let isDragging = false;
+
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  const mainContent = document.getElementById("mainContent");
+
+  sidebarCollapsed = !sidebarCollapsed;
+
+  if (sidebarCollapsed) {
+    sidebar.classList.add("collapsed");
+    mainContent.classList.remove("with-sidebar");
+    mainContent.classList.add("sidebar-collapsed");
+  } else {
+    sidebar.classList.remove("collapsed");
+    mainContent.classList.remove("sidebar-collapsed");
+    mainContent.classList.add("with-sidebar");
+  }
 }
 
 // Events
@@ -473,4 +495,35 @@ window.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     document.getElementById("demoXpBar").style.width = "75%";
   }, 500);
+
+  // Sidebar drag handle functionality
+  const dragHandle = document.getElementById("sidebarDragHandle");
+  if (dragHandle) {
+    dragHandle.addEventListener("click", toggleSidebar);
+
+    dragHandle.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      e.preventDefault();
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (isDragging) {
+        const sidebar = document.getElementById("sidebar");
+        const mouseX = e.clientX;
+
+        // Toggle based on drag direction
+        if (mouseX < 100 && !sidebarCollapsed) {
+          toggleSidebar();
+          isDragging = false;
+        } else if (mouseX > 150 && sidebarCollapsed) {
+          toggleSidebar();
+          isDragging = false;
+        }
+      }
+    });
+
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+  }
 });
