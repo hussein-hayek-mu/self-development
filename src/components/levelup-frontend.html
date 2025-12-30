@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Level Up - Your Life Is a Game</title>
+    <title>Level Up - Gamify Your Life</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght:700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -22,8 +23,10 @@
             --accent-gold: #fbbf24;
             --text-primary: #e2e8f0;
             --text-secondary: #94a3b8;
+            --success-green: #22c55e;
             --glow-purple: 0 0 20px rgba(168, 85, 247, 0.5);
             --glow-blue: 0 0 20px rgba(59, 130, 246, 0.5);
+            --glow-green: 0 0 15px rgba(34, 197, 94, 0.4);
         }
 
         body {
@@ -33,12 +36,75 @@
             overflow-x: hidden;
         }
 
+        /* --- AUTH SCREEN --- */
+        .auth-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5000;
+            background-image: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.15), transparent 70%);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .auth-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.1);
+        }
+
+        .auth-card {
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            width: 100%;
+            max-width: 450px;
+            box-shadow: var(--glow-purple);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header { text-align: center; margin-bottom: 2rem; }
+        .auth-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .auth-subtitle { color: var(--text-secondary); }
+        .auth-tabs { display: flex; margin-bottom: 2rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .auth-tab {
+            flex: 1; padding: 1rem; text-align: center; cursor: pointer; color: var(--text-secondary);
+            transition: all 0.3s; border-bottom: 2px solid transparent;
+        }
+        .auth-tab.active { color: var(--accent-purple); border-bottom-color: var(--accent-purple); font-weight: 600; }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; animation: fadeIn 0.3s; }
+
+        /* --- MAIN APP --- */
         .app-container {
             display: flex;
             min-height: 100vh;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+            display: none;
         }
 
-        /* Sidebar */
+        .app-container.visible { display: flex; opacity: 1; }
+
         .sidebar {
             width: 250px;
             background: var(--bg-card);
@@ -47,11 +113,10 @@
             position: fixed;
             height: 100vh;
             display: none;
+            z-index: 100;
         }
 
-        .sidebar.active {
-            display: block;
-        }
+        .sidebar.active { display: block; }
 
         .logo {
             font-family: 'Orbitron', sans-serif;
@@ -65,191 +130,47 @@
         }
 
         .nav-item {
-            padding: 1rem 2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
+            padding: 1rem 2rem; cursor: pointer; transition: all 0.3s; border-left: 3px solid transparent;
         }
+        .nav-item:hover { background: rgba(168, 85, 247, 0.1); border-left-color: var(--accent-purple); }
+        .nav-item.active { background: rgba(168, 85, 247, 0.2); border-left-color: var(--accent-purple); color: var(--accent-purple); }
 
-        .nav-item:hover {
-            background: rgba(168, 85, 247, 0.1);
-            border-left-color: var(--accent-purple);
-        }
+        .main-content { flex: 1; margin-left: 0; transition: margin-left 0.3s; }
+        .main-content.with-sidebar { margin-left: 250px; }
 
-        .nav-item.active {
-            background: rgba(168, 85, 247, 0.2);
-            border-left-color: var(--accent-purple);
-            color: var(--accent-purple);
-        }
+        .page { display: none; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        .page.active { display: block; animation: fadeIn 0.3s; }
 
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            margin-left: 0;
-            transition: margin-left 0.3s;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .main-content.with-sidebar {
-            margin-left: 250px;
-        }
-
-        .page {
-            display: none;
-            padding: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .page.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Landing Page */
-        .hero {
-            text-align: center;
-            padding: 6rem 2rem;
-            background: radial-gradient(circle at center, rgba(168, 85, 247, 0.1), transparent);
-        }
-
+        /* General UI */
+        .hero { text-align: center; padding: 6rem 2rem; background: radial-gradient(circle at center, rgba(168, 85, 247, 0.1), transparent); }
         .hero h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3.5rem;
-            margin-bottom: 1.5rem;
+            font-family: 'Orbitron', sans-serif; font-size: 3.5rem; margin-bottom: 1.5rem;
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
+        .hero p { font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 3rem; }
 
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-        }
+        .btn { padding: 1rem 2.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; width: 100%; }
+        .cta-buttons .btn { width: auto; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--glow-purple); }
+        .btn-secondary { background: transparent; color: var(--accent-purple); border: 2px solid var(--accent-purple); }
+        .btn-secondary:hover { background: rgba(168, 85, 247, 0.1); }
+        .btn-small { padding: 0.5rem 1rem; font-size: 0.875rem; width: auto; }
+        .btn-danger { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444; }
 
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .level-card { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); padding: 2rem; border-radius: 12px; text-align: center; }
+        .level-number { font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 900; }
+        .xp-card, .stat-card, .guild-card, .chart-mock { background: var(--bg-card); padding: 2rem; border-radius: 12px; border: 1px solid rgba(168, 85, 247, 0.2); }
+        
+        .xp-bar-container { background: rgba(0, 0, 0, 0.3); height: 24px; border-radius: 12px; overflow: hidden; margin: 1rem 0; position: relative; }
+        .xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue)); border-radius: 12px; transition: width 1s ease; box-shadow: var(--glow-purple); }
+        .xp-text { display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--text-secondary); }
 
-        .btn {
-            padding: 1rem 2.5rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--glow-purple);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--accent-purple);
-            border: 2px solid var(--accent-purple);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(168, 85, 247, 0.1);
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 5rem;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--glow-purple);
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--accent-purple);
-        }
-
-        /* Dashboard */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .level-card {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-            padding: 2rem;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .level-number {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            font-weight: 900;
-        }
-
-        .level-title {
-            font-size: 1.25rem;
-            margin-top: 0.5rem;
-        }
-
-        .xp-card {
-            background: var(--bg-card);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid rgba(168, 85, 247, 0.2);
-        }
-
-        .xp-bar-container {
-            background: rgba(0, 0, 0, 0.3);
-            height: 24px;
-            border-radius: 12px;
-            overflow: hidden;
-            margin: 1rem 0;
-            position: relative;
-        }
-
-        .xp-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
-            border-radius: 12px;
-            transition: width 1s ease;
-            box-shadow: var(--glow-purple);
-        }
-
-        .xp-text {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
+        /* --- QUESTS & HABITS CARDS --- */
         .quest-card, .habit-card {
             background: var(--bg-card);
             padding: 1.5rem;
@@ -257,6 +178,10 @@
             border: 1px solid rgba(168, 85, 247, 0.2);
             margin-bottom: 1rem;
             transition: all 0.3s;
+            position: relative;
+            display: flex; /* Changed to flex for row layout */
+            align-items: center;
+            gap: 1.5rem; /* Space between checkbox and text */
         }
 
         .quest-card:hover, .habit-card:hover {
@@ -264,11 +189,58 @@
             transform: translateX(5px);
         }
 
-        .quest-header {
+        /* Completed State Styles */
+        .quest-card.completed, .habit-card.completed {
+            border-color: var(--success-green);
+            background: rgba(34, 197, 94, 0.05);
+        }
+
+        .quest-card.completed .quest-title, .habit-card.completed .quest-title {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        /* Checkboxes */
+        .check-circle {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--accent-purple);
+            border-radius: 50%; /* Circle for Quests */
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .habit-toggle {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--accent-purple);
+            border-radius: 6px; /* Square for Habits */
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .check-circle.completed, .habit-toggle.completed {
+            background: var(--success-green);
+            border-color: var(--success-green);
+            box-shadow: var(--glow-green);
+        }
+
+        /* Content Layout */
+        .card-content {
+            flex: 1;
+            text-align: left; /* FORCE LEFT ALIGNMENT */
+        }
+
+        .quest-header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .quest-title {
@@ -276,7 +248,7 @@
             font-size: 1.125rem;
         }
 
-        .quest-xp {
+        .quest-xp-badge {
             background: var(--accent-gold);
             color: var(--bg-dark);
             padding: 0.25rem 0.75rem;
@@ -285,275 +257,138 @@
             font-size: 0.875rem;
         }
 
-        .quest-meta {
+        .quest-meta-row {
             display: flex;
             gap: 1rem;
             font-size: 0.875rem;
             color: var(--text-secondary);
+            align-items: center;
         }
 
-        .difficulty {
-            padding: 0.25rem 0.5rem;
+        /* Actions */
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .action-icon {
+            cursor: pointer;
+            padding: 5px;
             border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            opacity: 0.7;
+            transition: 0.2s;
+            font-size: 1rem;
         }
+        .action-icon:hover { opacity: 1; background: rgba(255,255,255,0.1); }
 
+        /* Difficulty Badges */
+        .difficulty { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
         .difficulty-easy { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
         .difficulty-medium { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
         .difficulty-hard { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
 
-        /* Habits */
-        .habit-toggle {
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--accent-purple);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
+        /* Forms & Modals */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8);
+            z-index: 2000; display: none; justify-content: center; align-items: center;
         }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--bg-card); padding: 2rem; border-radius: 12px; width: 90%; max-width: 500px;
+            border: 1px solid var(--accent-purple); box-shadow: var(--glow-purple);
+        }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; text-align: left; }
+        .form-input {
+            width: 100%; padding: 0.75rem; background: var(--bg-dark); border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 6px; color: white; font-family: inherit; transition: 0.3s;
+        }
+        .form-input:focus { outline: none; border-color: var(--accent-purple); box-shadow: 0 0 10px rgba(168, 85, 247, 0.2); }
+        
+        .page-header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .section-header { font-size: 2rem; margin-bottom: 0; font-family: 'Orbitron', sans-serif; text-align: left; }
+        .cta-buttons { display: flex; gap: 1rem; justify-content: center; }
 
-        .habit-toggle.completed {
-            background: var(--accent-purple);
-            box-shadow: var(--glow-purple);
-        }
-
-        .habit-header {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .habit-info {
-            flex: 1;
-        }
-
-        .habit-streak {
-            color: var(--accent-gold);
-            font-weight: 600;
-        }
-
-        /* AI Coach */
-        .chat-window {
-            background: var(--bg-card);
-            border-radius: 12px;
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            height: 500px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-
-        .chat-message {
-            background: rgba(168, 85, 247, 0.1);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-
-        .chat-input-area {
-            padding: 1.5rem;
-            border-top: 1px solid rgba(168, 85, 247, 0.2);
-        }
-
-        .chat-suggestions {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .suggestion-btn {
-            padding: 0.5rem 1rem;
-            background: rgba(168, 85, 247, 0.2);
-            border: 1px solid var(--accent-purple);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.3s;
-        }
-
-        .suggestion-btn:hover {
-            background: rgba(168, 85, 247, 0.3);
-        }
-
-        /* Analytics */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--accent-purple);
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-        }
-
-        .chart-mock {
-            background: var(--bg-card);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            height: 300px;
-            display: flex;
-            align-items: flex-end;
-            gap: 1rem;
-            justify-content: space-around;
-        }
-
-        .chart-bar {
-            background: linear-gradient(to top, var(--accent-purple), var(--accent-blue));
-            width: 40px;
-            border-radius: 4px 4px 0 0;
-            transition: height 0.5s;
-        }
-
-        /* Community */
-        .guild-card {
-            background: var(--bg-card);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            margin-bottom: 1.5rem;
-        }
-
-        .guild-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .guild-members {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        /* Profile */
-        .profile-header {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-            padding: 3rem;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: var(--bg-dark);
-            margin: 0 auto 1rem;
-            border: 4px solid white;
-        }
-
-        .badge-wall {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 1rem;
-        }
-
-        .badge {
-            background: var(--bg-card);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            text-align: center;
-            font-size: 2rem;
-        }
-
-        .badge.locked {
-            opacity: 0.3;
-            filter: grayscale(1);
-        }
+        /* AI Coach & Other Pages */
+        .chat-window { background: var(--bg-card); border-radius: 12px; border: 1px solid rgba(168, 85, 247, 0.2); height: 500px; display: flex; flex-direction: column; }
+        .chat-messages { flex: 1; padding: 2rem; overflow-y: auto; text-align: left; }
+        .chat-message { background: rgba(168, 85, 247, 0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
+        .chat-input-area { padding: 1.5rem; border-top: 1px solid rgba(168, 85, 247, 0.2); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-value { font-size: 2.5rem; font-weight: 700; color: var(--accent-purple); }
+        .profile-header { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); padding: 3rem; border-radius: 12px; text-align: center; margin-bottom: 2rem; }
+        .avatar { width: 120px; height: 120px; border-radius: 50%; background: var(--bg-dark); margin: 0 auto 1rem; border: 4px solid white; }
+        .badge-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem; }
+        .badge { background: var(--bg-card); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(168, 85, 247, 0.2); text-align: center; font-size: 2rem; }
+        .badge.locked { opacity: 0.3; filter: grayscale(1); }
 
         /* Level Up Modal */
         .level-up-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9);
+            z-index: 6000; align-items: center; justify-content: center;
         }
-
-        .level-up-modal.active {
-            display: flex;
-        }
-
-        .level-up-content {
-            text-align: center;
-            animation: levelUpAnimation 1s ease-out;
-        }
-
-        @keyframes levelUpAnimation {
-            0% { transform: scale(0.5); opacity: 0; }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
+        .level-up-modal.active { display: flex; }
+        .level-up-content { text-align: center; animation: levelUpAnimation 1s ease-out; }
+        @keyframes levelUpAnimation { 0% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
         .level-up-content h2 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
+            font-family: 'Orbitron', sans-serif; font-size: 4rem; margin-bottom: 1rem;
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-        }
-
-        .section-header {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            font-family: 'Orbitron', sans-serif;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: relative;
-                height: auto;
-            }
-
-            .main-content.with-sidebar {
-                margin-left: 0;
-            }
-
-            .hero h1 {
-                font-size: 2rem;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-            }
+            .sidebar { width: 100%; position: relative; height: auto; }
+            .main-content.with-sidebar { margin-left: 0; }
+            .hero h1 { font-size: 2rem; }
+            .cta-buttons { flex-direction: column; }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
+
+    <!-- AUTHENTICATION SCREEN -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-logo">LEVEL UP</div>
+                <div class="auth-subtitle">Gamify your life, master your future</div>
+            </div>
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
+                <div class="auth-tab" onclick="switchAuthTab('register')">Sign Up</div>
+            </div>
+            <div id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" placeholder="hero@levelup.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="••••••••">
+                </div>
+                <button class="btn btn-primary" onclick="simulateLogin()">Start Game</button>
+            </div>
+            <div id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label class="form-label">Hero Name</label>
+                    <input type="text" class="form-input" placeholder="e.g. ShadowWalker">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" placeholder="hero@levelup.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" placeholder="••••••••">
+                </div>
+                <button class="btn btn-primary" onclick="simulateLogin()">Create Account</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="app-container" id="appContainer">
         <!-- Sidebar -->
         <nav class="sidebar" id="sidebar">
             <div class="logo">LEVEL UP</div>
@@ -565,6 +400,7 @@
             <div class="nav-item" data-page="analytics">Analytics</div>
             <div class="nav-item" data-page="community">Community</div>
             <div class="nav-item" data-page="profile">Profile</div>
+            <div class="nav-item" onclick="logout()" style="margin-top: auto; color: #ef4444; border-left-color: transparent;">Logout</div>
         </nav>
 
         <!-- Main Content -->
@@ -576,46 +412,13 @@
                     <p>Transform your habits into quests, earn XP, and become the hero of your own story.</p>
                     <div class="cta-buttons">
                         <button class="btn btn-primary" onclick="startJourney()">Start Your Journey</button>
-                        <button class="btn btn-secondary" onclick="navigateTo('ai')">Meet Your AI Coach</button>
-                    </div>
-                </div>
-
-                <div class="features">
-                    <div class="feature-card">
-                        <h3>🧠 Mindset Mastery</h3>
-                        <p>Build mental resilience through daily challenges and reflective quests designed to level up your mindset.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>⚔️ Epic Quests</h3>
-                        <p>Turn your goals into exciting quests with XP rewards. Complete daily missions and unlock boss challenges.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>📈 XP & Progression</h3>
-                        <p>Watch your progress in real-time. Every habit completed, every quest finished brings you closer to your next level.</p>
-                    </div>
-                    <div class="feature-card">
-                        <h3>🤖 AI Coach</h3>
-                        <p>Get personalized guidance from your AI companion. Receive motivation, strategies, and insights tailored to you.</p>
-                    </div>
-                </div>
-
-                <div style="margin-top: 5rem; text-align: center;">
-                    <h2 class="section-header">See Your Progress</h2>
-                    <div class="xp-card" style="max-width: 600px; margin: 0 auto;">
-                        <div class="xp-text">
-                            <span>Level 12 Progress</span>
-                            <span>7,540 / 10,000 XP</span>
-                        </div>
-                        <div class="xp-bar-container">
-                            <div class="xp-bar-fill" id="demoXpBar" style="width: 75%"></div>
-                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Dashboard -->
             <div class="page" id="page-dashboard">
-                <h1 class="section-header">Dashboard</h1>
+                <h1 class="section-header" style="margin-bottom: 2rem;">Dashboard</h1>
                 <div class="dashboard-grid">
                     <div class="level-card">
                         <div class="level-number">12</div>
@@ -633,33 +436,17 @@
                     </div>
                 </div>
 
-                <h2 style="margin: 3rem 0 1.5rem; font-size: 1.5rem;">Today's Quests</h2>
-                <div id="dashboardQuests">
-                    <!-- Quests populated by JS -->
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 3rem;">
-                    <div class="stat-card">
-                        <div class="stat-value">🔥 7</div>
-                        <div class="stat-label">Day Streak</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">😊</div>
-                        <div class="stat-label">Focused</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">12</div>
-                        <div class="stat-label">Quests Complete</div>
-                    </div>
-                </div>
+                <h2 style="margin: 3rem 0 1.5rem; font-size: 1.5rem; text-align: left;">Today's Quests</h2>
+                <div id="dashboardQuests"></div>
             </div>
 
             <!-- Habits Page -->
             <div class="page" id="page-habits">
-                <h1 class="section-header">Habits</h1>
-                <div id="habitsList">
-                    <!-- Habits populated by JS -->
+                <div class="page-header-actions">
+                    <h1 class="section-header">Habits</h1>
+                    <button class="btn btn-primary btn-small" onclick="openHabitModal()">+ Add Habit</button>
                 </div>
+                <div id="habitsList"></div>
                 <div id="perfectDayBonus" style="display: none; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, var(--accent-gold), #f59e0b); border-radius: 12px; text-align: center; font-size: 1.5rem; font-weight: 700; animation: fadeIn 0.5s;">
                     🎉 PERFECT DAY! +500 BONUS XP!
                 </div>
@@ -667,148 +454,67 @@
 
             <!-- Quests Page -->
             <div class="page" id="page-quests">
-                <h1 class="section-header">Quests</h1>
+                <div class="page-header-actions">
+                    <h1 class="section-header">Quests</h1>
+                    <button class="btn btn-primary btn-small" onclick="openQuestModal()">+ Add Quest</button>
+                </div>
                 
-                <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem;">Daily Quests</h2>
+                <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem; text-align: left;">Daily Quests</h2>
                 <div id="dailyQuests"></div>
 
-                <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem;">Weekly Quests</h2>
+                <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem; text-align: left;">Weekly Quests</h2>
                 <div id="weeklyQuests"></div>
 
-                <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem;">Boss Quests</h2>
+                <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem; text-align: left;">Boss Quests</h2>
                 <div id="bossQuests"></div>
             </div>
 
             <!-- AI Coach -->
             <div class="page" id="page-ai">
-                <h1 class="section-header">AI Coach</h1>
+                <h1 class="section-header" style="margin-bottom: 2rem;">AI Coach</h1>
                 <div class="chat-window">
                     <div class="chat-messages" id="chatMessages">
                         <div class="chat-message">
-                            <strong>AI Coach:</strong> Welcome back, warrior! Ready to level up today? What would you like to focus on?
+                            <strong>AI Coach:</strong> Welcome back, warrior! Ready to level up today?
                         </div>
                     </div>
                     <div class="chat-input-area">
                         <div class="chat-suggestions">
                             <button class="suggestion-btn" onclick="sendChatMessage('Help me focus')">🎯 Focus Task</button>
                             <button class="suggestion-btn" onclick="sendChatMessage('I need motivation')">💪 Motivation</button>
-                            <button class="suggestion-btn" onclick="sendChatMessage('Mood reflection')">🧘 Mood Reflection</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Analytics -->
+            <!-- Analytics & Community (Simplified for length) -->
             <div class="page" id="page-analytics">
-                <h1 class="section-header">Progress & Analytics</h1>
-                
+                <h1 class="section-header" style="margin-bottom: 2rem;">Analytics</h1>
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value">24</div>
-                        <div class="stat-label">Quests This Week</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">89%</div>
-                        <div class="stat-label">Habit Success Rate</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">12,450</div>
-                        <div class="stat-label">Total XP Earned</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">7</div>
-                        <div class="stat-label">Current Streak</div>
-                    </div>
-                </div>
-
-                <h2 style="margin: 3rem 0 1rem; font-size: 1.5rem;">Weekly Activity</h2>
-                <div class="chart-mock" id="chart">
-                    <div class="chart-bar" style="height: 60%"></div>
-                    <div class="chart-bar" style="height: 80%"></div>
-                    <div class="chart-bar" style="height: 45%"></div>
-                    <div class="chart-bar" style="height: 90%"></div>
-                    <div class="chart-bar" style="height: 75%"></div>
-                    <div class="chart-bar" style="height: 85%"></div>
-                    <div class="chart-bar" style="height: 95%"></div>
+                    <div class="stat-card"><div class="stat-value">24</div><div class="stat-label">Quests This Week</div></div>
+                    <div class="stat-card"><div class="stat-value">89%</div><div class="stat-label">Habit Success Rate</div></div>
                 </div>
             </div>
 
-            <!-- Community -->
             <div class="page" id="page-community">
-                <h1 class="section-header">Community & Guilds</h1>
-                
+                <h1 class="section-header" style="margin-bottom: 2rem;">Community</h1>
                 <div class="guild-card">
-                    <div class="guild-header">
-                        <h3>⚔️ Morning Warriors</h3>
-                        <div class="guild-members">142 members</div>
-                    </div>
-                    <p>A guild dedicated to conquering morning routines and starting the day with maximum energy.</p>
-                    <button class="btn btn-primary" style="margin-top: 1rem;">Join Guild</button>
-                </div>
-
-                <div class="guild-card">
-                    <div class="guild-header">
-                        <h3>🧠 Mindset Masters</h3>
-                        <div class="guild-members">89 members</div>
-                    </div>
-                    <p>Focus on mental clarity, meditation, and building unshakeable confidence.</p>
-                    <button class="btn btn-primary" style="margin-top: 1rem;">Join Guild</button>
-                </div>
-
-                <div class="guild-card">
-                    <div class="guild-header">
-                        <h3>💼 Career Climbers</h3>
-                        <div class="guild-members">215 members</div>
-                    </div>
-                    <p>Professional development, skill building, and career advancement challenges.</p>
-                    <button class="btn btn-primary" style="margin-top: 1rem;">Join Guild</button>
+                    <div class="quest-header-row"><h3>⚔️ Morning Warriors</h3></div>
+                    <p>Conquer your morning routine.</p>
                 </div>
             </div>
 
-            <!-- Profile -->
             <div class="page" id="page-profile">
                 <div class="profile-header">
                     <div class="avatar"></div>
                     <h1>Focused Strategist</h1>
                     <p>Level 12 • 7,540 XP</p>
                 </div>
-
-                <h2 style="margin: 2rem 0 1rem; font-size: 1.5rem;">Badge Collection</h2>
-                <div class="badge-wall">
-                    <div class="badge">🔥</div>
-                    <div class="badge">⚔️</div>
-                    <div class="badge">🧠</div>
-                    <div class="badge">💪</div>
-                    <div class="badge locked">🏆</div>
-                    <div class="badge locked">👑</div>
-                    <div class="badge locked">⭐</div>
-                    <div class="badge locked">💎</div>
-                </div>
-
-                <h2 style="margin: 3rem 0 1rem; font-size: 1.5rem;">Stats</h2>
-                <div class="quest-card">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                        <span>Total Quests Completed</span>
-                        <strong>147</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                        <span>Longest Streak</span>
-                        <strong>23 days</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                        <span>Total XP Earned</span>
-                        <strong>12,450</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Member Since</span>
-                        <strong>Nov 2024</strong>
-                    </div>
-                </div>
             </div>
         </main>
     </div>
 
-    <!-- Level Up Modal -->
+    <!-- Modals -->
     <div class="level-up-modal" id="levelUpModal">
         <div class="level-up-content">
             <h2>LEVEL UP!</h2>
@@ -817,94 +523,166 @@
         </div>
     </div>
 
-    <script>
-        // Mock Data
-        const userData = {
-            level: 12,
-            xp: 7540,
-            xpToNext: 10000,
-            streak: 7
-        };
+    <!-- Habit Modal -->
+    <div class="modal-overlay" id="habitModal">
+        <div class="modal-content">
+            <h2 id="habitModalTitle" class="section-header" style="margin-bottom: 1.5rem; font-size: 1.5rem;">Add New Habit</h2>
+            <input type="hidden" id="habitId">
+            <div class="form-group">
+                <label class="form-label">Habit Title</label>
+                <input type="text" id="habitTitle" class="form-input" placeholder="e.g. Morning Jog">
+            </div>
+            <div class="form-group">
+                <label class="form-label">XP Reward</label>
+                <input type="number" id="habitXp" class="form-input" placeholder="e.g. 50">
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn btn-secondary btn-small" onclick="closeModal('habitModal')">Cancel</button>
+                <button class="btn btn-danger btn-small" id="deleteHabitBtn" style="display: none;" onclick="deleteHabit()">Delete</button>
+                <button class="btn btn-primary btn-small" onclick="saveHabit()">Save Habit</button>
+            </div>
+        </div>
+    </div>
 
-        const quests = {
+    <!-- Quest Modal -->
+    <div class="modal-overlay" id="questModal">
+        <div class="modal-content">
+            <h2 id="questModalTitle" class="section-header" style="margin-bottom: 1.5rem; font-size: 1.5rem;">Add New Quest</h2>
+            <input type="hidden" id="questId">
+            <input type="hidden" id="questOriginalType">
+            <div class="form-group">
+                <label class="form-label">Quest Type</label>
+                <select id="questType" class="form-input">
+                    <option value="daily">Daily Quest</option>
+                    <option value="weekly">Weekly Quest</option>
+                    <option value="boss">Boss Quest</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Quest Title</label>
+                <input type="text" id="questTitle" class="form-input" placeholder="e.g. Finish Report">
+            </div>
+            <div class="form-group">
+                <label class="form-label">XP Reward</label>
+                <input type="number" id="questXp" class="form-input" placeholder="e.g. 100">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Time / Deadline</label>
+                <input type="text" id="questTime" class="form-input" placeholder="e.g. 30 min">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Difficulty</label>
+                <select id="questDifficulty" class="form-input">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn btn-secondary btn-small" onclick="closeModal('questModal')">Cancel</button>
+                <button class="btn btn-danger btn-small" id="deleteQuestBtn" style="display: none;" onclick="deleteQuest()">Delete</button>
+                <button class="btn btn-primary btn-small" onclick="saveQuest()">Save Quest</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA & LOGIC ---
+        const userData = { level: 12, xp: 7540, xpToNext: 10000 };
+
+        let quests = {
             daily: [
-                { id: 1, title: "Morning Meditation", difficulty: "easy", xp: 50, time: "15 min" },
-                { id: 2, title: "Read 30 Pages", difficulty: "easy", xp: 100, time: "30 min" },
-                { id: 3, title: "Workout Session", difficulty: "medium", xp: 150, time: "45 min" }
+                { id: 1, title: "Morning Meditation", difficulty: "easy", xp: 50, time: "15 min", completed: false },
+                { id: 2, title: "Read 30 Pages", difficulty: "easy", xp: 100, time: "30 min", completed: false },
+                { id: 3, title: "Workout Session", difficulty: "medium", xp: 150, time: "45 min", completed: false }
             ],
             weekly: [
-                { id: 4, title: "Complete Side Project Milestone", difficulty: "medium", xp: 500, time: "5 days left" },
-                { id: 5, title: "Network with 3 New People", difficulty: "medium", xp: 300, time: "3 days left" }
+                { id: 4, title: "Complete Side Project Milestone", difficulty: "medium", xp: 500, time: "5 days left", completed: false }
             ],
             boss: [
-                { id: 6, title: "Launch Your Product", difficulty: "hard", xp: 2000, time: "2 weeks left" }
+                { id: 6, title: "Launch Your Product", difficulty: "hard", xp: 2000, time: "2 weeks left", completed: false }
             ]
         };
 
-        const habits = [
+        let habits = [
             { id: 1, title: "Morning Exercise", streak: 7, xp: 50, completed: false },
             { id: 2, title: "Gratitude Journal", streak: 12, xp: 30, completed: false },
-            { id: 3, title: "No Social Media Before Noon", streak: 5, xp: 40, completed: false },
-            { id: 4, title: "8 Hours Sleep", streak: 3, xp: 60, completed: false },
-            { id: 5, title: "Healthy Meals", streak: 9, xp: 50, completed: false }
+            { id: 3, title: "No Social Media", streak: 5, xp: 40, completed: false }
         ];
 
-        // Navigation
-        function navigateTo(pageName) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            
-            document.getElementById(`page-${pageName}`).classList.add('active');
-            document.querySelector(`[data-page="${pageName}"]`).classList.add('active');
-            
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('mainContent');
-            
-            if (pageName !== 'landing') {
-                sidebar.classList.add('active');
-                mainContent.classList.add('with-sidebar');
+        // --- AUTH ---
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            if(tab === 'login') {
+                document.querySelector('.auth-tab:first-child').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
             } else {
-                sidebar.classList.remove('active');
-                mainContent.classList.remove('with-sidebar');
+                document.querySelector('.auth-tab:last-child').classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
+        function simulateLogin() {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('appContainer').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('appContainer').classList.add('visible');
+                startJourney();
+            }, 100);
+        }
+
+        function logout() {
+            document.getElementById('appContainer').classList.remove('visible');
+            setTimeout(() => {
+                document.getElementById('appContainer').style.display = 'none';
+                document.getElementById('authScreen').classList.remove('hidden');
+            }, 500);
+        }
+
+        // --- NAVIGATION ---
+        function navigateTo(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(`page-${pageName}`).classList.add('active');
+            const nav = document.querySelector(`[data-page="${pageName}"]`);
+            if(nav) nav.classList.add('active');
+            
+            const sb = document.getElementById('sidebar');
+            const mc = document.getElementById('mainContent');
+            if(pageName !== 'landing') {
+                sb.classList.add('active'); mc.classList.add('with-sidebar');
+            } else {
+                sb.classList.remove('active'); mc.classList.remove('with-sidebar');
             }
         }
 
         function startJourney() {
             navigateTo('dashboard');
-            setTimeout(() => {
-                document.getElementById('dashboardXpBar').style.width = '75%';
-            }, 100);
+            setTimeout(() => { document.getElementById('dashboardXpBar').style.width = '75%'; }, 100);
         }
 
-        // Quest Rendering
-        function renderQuests(questArray, containerId) {
+        // --- RENDERING ---
+        function renderQuests(questArray, containerId, category) {
             const container = document.getElementById(containerId);
             container.innerHTML = questArray.map(quest => `
-                <div class="quest-card">
-                    <div class="quest-header">
-                        <div class="quest-title">${quest.title}</div>
-                        <div class="quest-xp">+${quest.xp} XP</div>
+                <div class="quest-card ${quest.completed ? 'completed' : ''}">
+                    <!-- Check Circle Toggle -->
+                    <div class="check-circle ${quest.completed ? 'completed' : ''}" 
+                         onclick="toggleQuest(${quest.id}, '${category}')">
+                         ${quest.completed ? '✓' : ''}
                     </div>
-                    <div class="quest-meta">
-                        <span class="difficulty difficulty-${quest.difficulty}">${quest.difficulty.toUpperCase()}</span>
-                        <span>⏱️ ${quest.time}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
 
-        // Habit Rendering
-        function renderHabits() {
-            const container = document.getElementById('habitsList');
-            container.innerHTML = habits.map(habit => `
-                <div class="habit-card">
-                    <div class="habit-header">
-                        <div class="habit-toggle ${habit.completed ? 'completed' : ''}" onclick="toggleHabit(${habit.id})"></div>
-                        <div class="habit-info">
-                            <div class="quest-title">${habit.title}</div>
-                            <div class="quest-meta">
-                                <span class="habit-streak">🔥 ${habit.streak} day streak</span>
-                                <span>+${habit.xp} XP</span>
+                    <div class="card-content">
+                        <div class="quest-header-row">
+                            <div class="quest-title">${quest.title}</div>
+                            <div class="quest-xp-badge">+${quest.xp} XP</div>
+                        </div>
+                        <div class="quest-meta-row">
+                            <span class="difficulty difficulty-${quest.difficulty}">${quest.difficulty.toUpperCase()}</span>
+                            <span>⏱️ ${quest.time}</span>
+                            <div class="card-actions">
+                                <span class="action-icon" onclick="openQuestModal(${quest.id}, '${category}')">✏️</span>
                             </div>
                         </div>
                     </div>
@@ -912,84 +690,207 @@
             `).join('');
         }
 
+        function refreshAllQuests() {
+            renderQuests(quests.daily, 'dashboardQuests', 'daily');
+            renderQuests(quests.daily, 'dailyQuests', 'daily');
+            renderQuests(quests.weekly, 'weeklyQuests', 'weekly');
+            renderQuests(quests.boss, 'bossQuests', 'boss');
+        }
+
+        function renderHabits() {
+            const container = document.getElementById('habitsList');
+            container.innerHTML = habits.map(habit => `
+                <div class="habit-card ${habit.completed ? 'completed' : ''}">
+                    <div class="habit-toggle ${habit.completed ? 'completed' : ''}" onclick="toggleHabit(${habit.id})"></div>
+                    <div class="card-content">
+                        <div class="quest-title">${habit.title}</div>
+                        <div class="quest-meta-row" style="margin-top: 5px;">
+                            <span style="color: var(--accent-gold); font-weight:600;">🔥 ${habit.streak} day streak</span>
+                            <span>+${habit.xp} XP</span>
+                            <div class="card-actions">
+                                <span class="action-icon" onclick="openHabitModal(${habit.id})">✏️</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- ACTIONS ---
+        function toggleQuest(id, category) {
+            const quest = quests[category].find(q => q.id === id);
+            quest.completed = !quest.completed;
+            
+            if (quest.completed) {
+                userData.xp += quest.xp;
+                updateXP();
+            } else {
+                userData.xp -= quest.xp; // Optional: Remove XP if unchecked
+                updateXP();
+            }
+            refreshAllQuests();
+        }
+
         function toggleHabit(id) {
             const habit = habits.find(h => h.id === id);
             habit.completed = !habit.completed;
             renderHabits();
             
-            // Check for perfect day
             const allCompleted = habits.every(h => h.completed);
             const bonusDiv = document.getElementById('perfectDayBonus');
             bonusDiv.style.display = allCompleted ? 'block' : 'none';
             
             if (habit.completed) {
-                // Simulate XP gain
                 userData.xp += habit.xp;
-                updateXP();
+            } else {
+                userData.xp -= habit.xp;
+            }
+            updateXP();
+        }
+
+        // --- MODALS (CRUD) ---
+        function closeModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+
+        // Habit CRUD
+        function openHabitModal(id = null) {
+            const modal = document.getElementById('habitModal');
+            const deleteBtn = document.getElementById('deleteHabitBtn');
+            if (id) {
+                const habit = habits.find(h => h.id === id);
+                document.getElementById('habitModalTitle').textContent = "Edit Habit";
+                document.getElementById('habitId').value = habit.id;
+                document.getElementById('habitTitle').value = habit.title;
+                document.getElementById('habitXp').value = habit.xp;
+                deleteBtn.style.display = 'block';
+            } else {
+                document.getElementById('habitModalTitle').textContent = "Add New Habit";
+                document.getElementById('habitId').value = '';
+                document.getElementById('habitTitle').value = '';
+                document.getElementById('habitXp').value = 50;
+                deleteBtn.style.display = 'none';
+            }
+            modal.classList.add('active');
+        }
+
+        function saveHabit() {
+            const id = document.getElementById('habitId').value;
+            const title = document.getElementById('habitTitle').value;
+            const xp = parseInt(document.getElementById('habitXp').value);
+            if (!title) return alert("Title required");
+
+            if (id) {
+                const habit = habits.find(h => h.id == id);
+                habit.title = title; habit.xp = xp;
+            } else {
+                habits.push({ id: Date.now(), title, streak: 0, xp, completed: false });
+            }
+            renderHabits(); closeModal('habitModal');
+        }
+
+        function deleteHabit() {
+            if(confirm("Delete habit?")) {
+                habits = habits.filter(h => h.id != document.getElementById('habitId').value);
+                renderHabits(); closeModal('habitModal');
             }
         }
 
-        // XP Management
+        // Quest CRUD
+        function openQuestModal(id = null, category = 'daily') {
+            const modal = document.getElementById('questModal');
+            const deleteBtn = document.getElementById('deleteQuestBtn');
+            if (id) {
+                const quest = quests[category].find(q => q.id == id);
+                document.getElementById('questModalTitle').textContent = "Edit Quest";
+                document.getElementById('questId').value = quest.id;
+                document.getElementById('questOriginalType').value = category;
+                document.getElementById('questType').value = category;
+                document.getElementById('questTitle').value = quest.title;
+                document.getElementById('questXp').value = quest.xp;
+                document.getElementById('questTime').value = quest.time;
+                document.getElementById('questDifficulty').value = quest.difficulty;
+                deleteBtn.style.display = 'block';
+            } else {
+                document.getElementById('questModalTitle').textContent = "Add New Quest";
+                document.getElementById('questId').value = '';
+                document.getElementById('questOriginalType').value = '';
+                document.getElementById('questType').value = 'daily';
+                document.getElementById('questTitle').value = '';
+                document.getElementById('questXp').value = 100;
+                document.getElementById('questTime').value = '';
+                deleteBtn.style.display = 'none';
+            }
+            modal.classList.add('active');
+        }
+
+        function saveQuest() {
+            const id = document.getElementById('questId').value;
+            const originalType = document.getElementById('questOriginalType').value;
+            const newType = document.getElementById('questType').value;
+            const title = document.getElementById('questTitle').value;
+            const xp = parseInt(document.getElementById('questXp').value);
+            const time = document.getElementById('questTime').value;
+            const difficulty = document.getElementById('questDifficulty').value;
+            if (!title) return alert("Title required");
+
+            const questObj = { id: id ? parseInt(id) : Date.now(), title, xp, time, difficulty, completed: false };
+
+            if (id) {
+                if (originalType !== newType) {
+                    quests[originalType] = quests[originalType].filter(q => q.id != id);
+                    quests[newType].push(questObj);
+                } else {
+                    const idx = quests[originalType].findIndex(q => q.id == id);
+                    quests[originalType][idx] = questObj;
+                }
+            } else {
+                quests[newType].push(questObj);
+            }
+            refreshAllQuests(); closeModal('questModal');
+        }
+
+        function deleteQuest() {
+            if(confirm("Delete quest?")) {
+                const type = document.getElementById('questOriginalType').value;
+                quests[type] = quests[type].filter(q => q.id != document.getElementById('questId').value);
+                refreshAllQuests(); closeModal('questModal');
+            }
+        }
+
+        // --- XP & UTILS ---
         function updateXP() {
-            const percentage = (userData.xp / userData.xpToNext) * 100;
-            document.getElementById('dashboardXpBar').style.width = `${percentage}%`;
+            const pct = (userData.xp / userData.xpToNext) * 100;
+            document.getElementById('dashboardXpBar').style.width = `${pct}%`;
             document.getElementById('dashboardXp').textContent = `${userData.xp.toLocaleString()} / ${userData.xpToNext.toLocaleString()} XP`;
-            
-            // Check for level up
             if (userData.xp >= userData.xpToNext) {
-                userData.level++;
-                userData.xp = 0;
-                userData.xpToNext = Math.floor(userData.xpToNext * 1.2);
-                showLevelUp();
+                userData.level++; userData.xp = 0; userData.xpToNext = Math.floor(userData.xpToNext * 1.2);
+                document.getElementById('levelUpModal').classList.add('active');
             }
         }
-
-        function showLevelUp() {
-            document.getElementById('levelUpModal').classList.add('active');
-        }
-
-        function closeLevelUp() {
-            document.getElementById('levelUpModal').classList.remove('active');
-        }
+        function closeLevelUp() { document.getElementById('levelUpModal').classList.remove('active'); }
 
         // Chat
-        function sendChatMessage(message) {
-            const chatMessages = document.getElementById('chatMessages');
-            const userMessage = document.createElement('div');
-            userMessage.className = 'chat-message';
-            userMessage.innerHTML = `<strong>You:</strong> ${message}`;
-            chatMessages.appendChild(userMessage);
-            
+        function sendChatMessage(msg) {
+            const chat = document.getElementById('chatMessages');
+            chat.innerHTML += `<div class="chat-message"><strong>You:</strong> ${msg}</div>`;
             setTimeout(() => {
-                const aiResponse = document.createElement('div');
-                aiResponse.className = 'chat-message';
-                aiResponse.innerHTML = `<strong>AI Coach:</strong> Great choice! Let's work on that together. I recommend starting with a 25-minute focus session. Ready?`;
-                chatMessages.appendChild(aiResponse);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 1000);
+                chat.innerHTML += `<div class="chat-message"><strong>AI Coach:</strong> Good idea! Let's get it done.</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 800);
         }
 
-        // Event Listeners
+        // Events
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', (e) => {
-                const page = e.target.dataset.page;
-                navigateTo(page);
+                if(e.target.dataset.page) navigateTo(e.target.dataset.page);
             });
         });
 
-        // Initialize
+        // Init
         window.addEventListener('DOMContentLoaded', () => {
-            renderQuests(quests.daily, 'dashboardQuests');
-            renderQuests(quests.daily, 'dailyQuests');
-            renderQuests(quests.weekly, 'weeklyQuests');
-            renderQuests(quests.boss, 'bossQuests');
-            renderHabits();
-            
-            // Animate demo XP bar on landing
-            setTimeout(() => {
-                document.getElementById('demoXpBar').style.width = '75%';
-            }, 500);
+            refreshAllQuests(); renderHabits();
+            setTimeout(() => { document.getElementById('demoXpBar').style.width = '75%'; }, 500);
         });
     </script>
 </body>
 </html>
+```
