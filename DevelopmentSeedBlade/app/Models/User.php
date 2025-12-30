@@ -6,8 +6,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Fortify\TwoFactorAuthenticatable;
-use Laravel\Sanctum\HasApiTokens;
 use App\Models\Habit;
 use App\Models\Quest;
 use App\Models\Badge;
@@ -20,7 +18,7 @@ use App\Models\Guild;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasApiTokens;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -31,6 +29,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'is_active',
         'level',
         'xp',
         'xp_to_next',
@@ -172,5 +172,21 @@ class User extends Authenticatable
             ->where('status', 'active')
             ->orderBy('due_date')
             ->get();
+    }
+
+    /**
+     * Check if user has admin role
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user can manage other users
+     */
+    public function canManageUsers(): bool
+    {
+        return $this->isAdmin();
     }
 }
