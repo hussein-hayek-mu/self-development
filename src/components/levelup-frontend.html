@@ -1,257 +1,412 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Level Up - Gamify Your Life</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght:700;900&family=Inter:wght@400;600;700&display=swap"
-     rel="stylesheet">
-    <link rel="stylesheet" href="levelup-frontend.css">
-</head>
-<body>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght:700;900&family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="levelup-frontend.css" />
+  </head>
+  <body>
     <!-- AUTHENTICATION SCREEN -->
     <div id="authScreen" class="auth-screen">
-        <div class="auth-card">
-            <div class="auth-header">
-                <div class="auth-logo">LEVEL UP</div>
-                <div class="auth-subtitle">Gamify your life, master your future</div>
-            </div>
-            <div class="auth-tabs">
-                <div class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
-                <div class="auth-tab" onclick="switchAuthTab('register')">Sign Up</div>
-            </div>
-            <div id="loginForm" class="auth-form active">
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-input" placeholder="hero@levelup.com">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" placeholder="••••••••">
-                </div>
-                <button class="btn btn-primary" onclick="simulateLogin()">Start Game</button>
-            </div>
-            <div id="registerForm" class="auth-form">
-                <div class="form-group">
-                    <label class="form-label">Hero Name</label>
-                    <input type="text" class="form-input" placeholder="e.g. ShadowWalker">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Email Address</label>
-                    <input type="email" class="form-input" placeholder="hero@levelup.com">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" placeholder="••••••••">
-                </div>
-                <button class="btn btn-primary" onclick="simulateLogin()">Create Account</button>
-            </div>
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="auth-logo">LEVEL UP</div>
+          <div class="auth-subtitle">Gamify your life, master your future</div>
         </div>
+        <div class="auth-tabs">
+          <div class="auth-tab active" onclick="switchAuthTab('login')">
+            Login
+          </div>
+          <div class="auth-tab" onclick="switchAuthTab('register')">
+            Sign Up
+          </div>
+        </div>
+        <div id="loginForm" class="auth-form active">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input
+              type="email"
+              class="form-input"
+              placeholder="hero@levelup.com"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" placeholder="••••••••" />
+          </div>
+          <button class="btn btn-primary" onclick="simulateLogin()">
+            Start Game
+          </button>
+        </div>
+        <div id="registerForm" class="auth-form">
+          <div class="form-group">
+            <label class="form-label">Hero Name</label>
+            <input
+              type="text"
+              class="form-input"
+              placeholder="e.g. ShadowWalker"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input
+              type="email"
+              class="form-input"
+              placeholder="hero@levelup.com"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" placeholder="••••••••" />
+          </div>
+          <button class="btn btn-primary" onclick="simulateLogin()">
+            Create Account
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- MAIN APP CONTAINER -->
     <div class="app-container" id="appContainer">
-        <!-- Sidebar -->
-        <nav class="sidebar" id="sidebar">
-            <div class="logo">LEVEL UP</div>
-            <div class="nav-item active" data-page="landing">Home</div>
-            <div class="nav-item" data-page="dashboard">Dashboard</div>
-            <div class="nav-item" data-page="habits">Habits</div>
-            <div class="nav-item" data-page="quests">Quests</div>
-            <div class="nav-item" data-page="ai">AI Coach</div>
-            <div class="nav-item" data-page="analytics">Analytics</div>
-            <div class="nav-item" data-page="community">Community</div>
-            <div class="nav-item" data-page="profile">Profile</div>
-            <div class="nav-item" onclick="logout()" style="margin-top: auto; color: #ef4444; border-left-color: transparent;">Logout</div>
-        </nav>
+      <!-- Sidebar -->
+      <nav class="sidebar" id="sidebar">
+        <div class="logo">LEVEL UP</div>
+        <div class="nav-item active" data-page="landing">Home</div>
+        <div class="nav-item" data-page="dashboard">Dashboard</div>
+        <div class="nav-item" data-page="habits">Habits</div>
+        <div class="nav-item" data-page="quests">Quests</div>
+        <div class="nav-item" data-page="ai">AI Coach</div>
+        <div class="nav-item" data-page="analytics">Analytics</div>
+        <div class="nav-item" data-page="community">Community</div>
+        <div class="nav-item" data-page="profile">Profile</div>
+        <div
+          class="nav-item"
+          onclick="logout()"
+          style="
+            margin-top: auto;
+            color: #ef4444;
+            border-left-color: transparent;
+          "
+        >
+          Logout
+        </div>
+      </nav>
 
-        <!-- Main Content -->
-        <main class="main-content" id="mainContent">
-            <!-- Landing Page -->
-            <div class="page active" id="page-landing">
-                <div class="hero">
-                    <h1>Your Life Is a Game.<br>Start Leveling Up.</h1>
-                    <p>Transform your habits into quests, earn XP, and become the hero of your own story.</p>
-                    <div class="cta-buttons">
-                        <button class="btn btn-primary" onclick="startJourney()">Start Your Journey</button>
-                    </div>
-                </div>
+      <!-- Main Content -->
+      <main class="main-content" id="mainContent">
+        <!-- Landing Page -->
+        <div class="page active" id="page-landing">
+          <div class="hero">
+            <h1>Your Life Is a Game.<br />Start Leveling Up.</h1>
+            <p>
+              Transform your habits into quests, earn XP, and become the hero of
+              your own story.
+            </p>
+            <div class="cta-buttons">
+              <button class="btn btn-primary" onclick="startJourney()">
+                Start Your Journey
+              </button>
             </div>
+          </div>
+        </div>
 
-            <!-- Dashboard -->
-            <div class="page" id="page-dashboard">
-                <h1 class="section-header" style="margin-bottom: 2rem;">Dashboard</h1>
-                <div class="dashboard-grid">
-                    <div class="level-card">
-                        <div class="level-number">12</div>
-                        <div class="level-title">Focused Strategist</div>
-                    </div>
-                    <div class="xp-card">
-                        <h3>XP Progress</h3>
-                        <div class="xp-text">
-                            <span>Current Level</span>
-                            <span id="dashboardXp">7,540 / 10,000 XP</span>
-                        </div>
-                        <div class="xp-bar-container">
-                            <div class="xp-bar-fill" id="dashboardXpBar" style="width: 75%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <h2 style="margin: 3rem 0 1.5rem; font-size: 1.5rem; text-align: left;">Today's Quests</h2>
-                <div id="dashboardQuests"></div>
+        <!-- Dashboard -->
+        <div class="page" id="page-dashboard">
+          <h1 class="section-header" style="margin-bottom: 2rem">Dashboard</h1>
+          <div class="dashboard-grid">
+            <div class="level-card">
+              <div class="level-number">12</div>
+              <div class="level-title">Focused Strategist</div>
             </div>
-
-            <!-- Habits Page -->
-            <div class="page" id="page-habits">
-                <div class="page-header-actions">
-                    <h1 class="section-header">Habits</h1>
-                    <button class="btn btn-primary btn-small" onclick="openHabitModal()">+ Add Habit</button>
-                </div>
-                <div id="habitsList"></div>
-                <div id="perfectDayBonus" style="display: none; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, var(--accent-gold), #f59e0b); border-radius: 12px; text-align: center; font-size: 1.5rem; font-weight: 700; animation: fadeIn 0.5s;">
-                    🎉 PERFECT DAY! +500 BONUS XP!
-                </div>
+            <div class="xp-card">
+              <h3>XP Progress</h3>
+              <div class="xp-text">
+                <span>Current Level</span>
+                <span id="dashboardXp">7,540 / 10,000 XP</span>
+              </div>
+              <div class="xp-bar-container">
+                <div
+                  class="xp-bar-fill"
+                  id="dashboardXpBar"
+                  style="width: 75%"
+                ></div>
+              </div>
             </div>
+          </div>
 
-            <!-- Quests Page -->
-            <div class="page" id="page-quests">
-                <div class="page-header-actions">
-                    <h1 class="section-header">Quests</h1>
-                    <button class="btn btn-primary btn-small" onclick="openQuestModal()">+ Add Quest</button>
-                </div>
-                
-                <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem; text-align: left;">Daily Quests</h2>
-                <div id="dailyQuests"></div>
+          <h2
+            style="margin: 3rem 0 1.5rem; font-size: 1.5rem; text-align: left"
+          >
+            Today's Quests
+          </h2>
+          <div id="dashboardQuests"></div>
+        </div>
 
-                <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem; text-align: left;">Weekly Quests</h2>
-                <div id="weeklyQuests"></div>
+        <!-- Habits Page -->
+        <div class="page" id="page-habits">
+          <div class="page-header-actions">
+            <h1 class="section-header">Habits</h1>
+            <button
+              class="btn btn-primary btn-small"
+              onclick="openHabitModal()"
+            >
+              + Add Habit
+            </button>
+          </div>
+          <div id="habitsList"></div>
+          <div
+            id="perfectDayBonus"
+            style="
+              display: none;
+              margin-top: 2rem;
+              padding: 2rem;
+              background: linear-gradient(135deg, var(--accent-gold), #f59e0b);
+              border-radius: 12px;
+              text-align: center;
+              font-size: 1.5rem;
+              font-weight: 700;
+              animation: fadeIn 0.5s;
+            "
+          >
+            🎉 PERFECT DAY! +500 BONUS XP!
+          </div>
+        </div>
 
-                <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem; text-align: left;">Boss Quests</h2>
-                <div id="bossQuests"></div>
+        <!-- Quests Page -->
+        <div class="page" id="page-quests">
+          <div class="page-header-actions">
+            <h1 class="section-header">Quests</h1>
+            <button
+              class="btn btn-primary btn-small"
+              onclick="openQuestModal()"
+            >
+              + Add Quest
+            </button>
+          </div>
+
+          <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem; text-align: left">
+            Daily Quests
+          </h2>
+          <div id="dailyQuests"></div>
+
+          <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem; text-align: left">
+            Weekly Quests
+          </h2>
+          <div id="weeklyQuests"></div>
+
+          <h2 style="margin: 2rem 0 1rem; font-size: 1.25rem; text-align: left">
+            Boss Quests
+          </h2>
+          <div id="bossQuests"></div>
+        </div>
+
+        <!-- AI Coach -->
+        <div class="page" id="page-ai">
+          <h1 class="section-header" style="margin-bottom: 2rem">AI Coach</h1>
+          <div class="chat-window">
+            <div class="chat-messages" id="chatMessages">
+              <div class="chat-message">
+                <strong>AI Coach:</strong> Welcome back, warrior! Ready to level
+                up today?
+              </div>
             </div>
-
-            <!-- AI Coach -->
-            <div class="page" id="page-ai">
-                <h1 class="section-header" style="margin-bottom: 2rem;">AI Coach</h1>
-                <div class="chat-window">
-                    <div class="chat-messages" id="chatMessages">
-                        <div class="chat-message">
-                            <strong>AI Coach:</strong> Welcome back, warrior! Ready to level up today?
-                        </div>
-                    </div>
-                    <div class="chat-input-area">
-                        <div class="chat-suggestions">
-                            <button class="suggestion-btn" onclick="sendChatMessage('Help me focus')">🎯 Focus Task</button>
-                            <button class="suggestion-btn" onclick="sendChatMessage('I need motivation')">💪 Motivation</button>
-                        </div>
-                    </div>
-                </div>
+            <div class="chat-input-area">
+              <div class="chat-suggestions">
+                <button
+                  class="suggestion-btn"
+                  onclick="sendChatMessage('Help me focus')"
+                >
+                  🎯 Focus Task
+                </button>
+                <button
+                  class="suggestion-btn"
+                  onclick="sendChatMessage('I need motivation')"
+                >
+                  💪 Motivation
+                </button>
+              </div>
             </div>
+          </div>
+        </div>
 
-            <!-- Analytics & Community (Simplified for length) -->
-            <div class="page" id="page-analytics">
-                <h1 class="section-header" style="margin-bottom: 2rem;">Analytics</h1>
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-value">24</div><div class="stat-label">Quests This Week</div></div>
-                    <div class="stat-card"><div class="stat-value">89%</div><div class="stat-label">Habit Success Rate</div></div>
-                </div>
+        <!-- Analytics & Community (Simplified for length) -->
+        <div class="page" id="page-analytics">
+          <h1 class="section-header" style="margin-bottom: 2rem">Analytics</h1>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value">24</div>
+              <div class="stat-label">Quests This Week</div>
             </div>
+            <div class="stat-card">
+              <div class="stat-value">89%</div>
+              <div class="stat-label">Habit Success Rate</div>
+            </div>
+          </div>
+        </div>
 
-            <div class="page" id="page-community">
-                <h1 class="section-header" style="margin-bottom: 2rem;">Community</h1>
-                <div class="guild-card">
-                    <div class="quest-header-row"><h3>⚔️ Morning Warriors</h3></div>
-                    <p>Conquer your morning routine.</p>
-                </div>
-            </div>
+        <div class="page" id="page-community">
+          <h1 class="section-header" style="margin-bottom: 2rem">Community</h1>
+          <div class="guild-card">
+            <div class="quest-header-row"><h3>⚔️ Morning Warriors</h3></div>
+            <p>Conquer your morning routine.</p>
+          </div>
+        </div>
 
-            <div class="page" id="page-profile">
-                <div class="profile-header">
-                    <div class="avatar"></div>
-                    <h1>Focused Strategist</h1>
-                    <p>Level 12 • 7,540 XP</p>
-                </div>
-            </div>
-        </main>
+        <div class="page" id="page-profile">
+          <div class="profile-header">
+            <div class="avatar"></div>
+            <h1>Focused Strategist</h1>
+            <p>Level 12 • 7,540 XP</p>
+          </div>
+        </div>
+      </main>
     </div>
 
     <!-- Modals -->
     <div class="level-up-modal" id="levelUpModal">
-        <div class="level-up-content">
-            <h2>LEVEL UP!</h2>
-            <p style="font-size: 1.5rem;">You've reached Level 13!</p>
-            <button class="btn btn-primary" onclick="closeLevelUp()" style="margin-top: 2rem;">Continue</button>
-        </div>
+      <div class="level-up-content">
+        <h2>LEVEL UP!</h2>
+        <p style="font-size: 1.5rem">You've reached Level 13!</p>
+        <button
+          class="btn btn-primary"
+          onclick="closeLevelUp()"
+          style="margin-top: 2rem"
+        >
+          Continue
+        </button>
+      </div>
     </div>
 
     <!-- Habit Modal -->
     <div class="modal-overlay" id="habitModal">
-        <div class="modal-content">
-            <h2 id="habitModalTitle" class="section-header" style="margin-bottom: 1.5rem; font-size: 1.5rem;">Add New Habit</h2>
-            <input type="hidden" id="habitId">
-            <div class="form-group">
-                <label class="form-label">Habit Title</label>
-                <input type="text" id="habitTitle" class="form-input" placeholder="e.g. Morning Jog">
-            </div>
-            <div class="form-group">
-                <label class="form-label">XP Reward</label>
-                <input type="number" id="habitXp" class="form-input" placeholder="e.g. 50">
-            </div>
-            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <button class="btn btn-secondary btn-small" onclick="closeModal('habitModal')">Cancel</button>
-                <button class="btn btn-danger btn-small" id="deleteHabitBtn" style="display: none;" onclick="deleteHabit()">Delete</button>
-                <button class="btn btn-primary btn-small" onclick="saveHabit()">Save Habit</button>
-            </div>
+      <div class="modal-content">
+        <h2
+          id="habitModalTitle"
+          class="section-header"
+          style="margin-bottom: 1.5rem; font-size: 1.5rem"
+        >
+          Add New Habit
+        </h2>
+        <input type="hidden" id="habitId" />
+        <div class="form-group">
+          <label class="form-label">Habit Title</label>
+          <input
+            type="text"
+            id="habitTitle"
+            class="form-input"
+            placeholder="e.g. Morning Jog"
+          />
         </div>
+        <div class="form-group">
+          <label class="form-label">XP Reward</label>
+          <input
+            type="number"
+            id="habitXp"
+            class="form-input"
+            placeholder="e.g. 50"
+          />
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: flex-end">
+          <button
+            class="btn btn-secondary btn-small"
+            onclick="closeModal('habitModal')"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn btn-danger btn-small"
+            id="deleteHabitBtn"
+            style="display: none"
+            onclick="deleteHabit()"
+          >
+            Delete
+          </button>
+          <button class="btn btn-primary btn-small" onclick="saveHabit()">
+            Save Habit
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Quest Modal -->
     <div class="modal-overlay" id="questModal">
-        <div class="modal-content">
-            <h2 id="questModalTitle" class="section-header" style="margin-bottom: 1.5rem; font-size: 1.5rem;">Add New Quest</h2>
-            <input type="hidden" id="questId">
-            <input type="hidden" id="questOriginalType">
-            <div class="form-group">
-                <label class="form-label">Quest Type</label>
-                <select id="questType" class="form-input">
-                    <option value="daily">Daily Quest</option>
-                    <option value="weekly">Weekly Quest</option>
-                    <option value="boss">Boss Quest</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Quest Title</label>
-                <input type="text" id="questTitle" class="form-input" placeholder="e.g. Finish Report">
-            </div>
-            <div class="form-group">
-                <label class="form-label">XP Reward</label>
-                <input type="number" id="questXp" class="form-input" placeholder="e.g. 100">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Time / Deadline</label>
-                <input type="text" id="questTime" class="form-input" placeholder="e.g. 30 min">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Difficulty</label>
-                <select id="questDifficulty" class="form-input">
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                </select>
-            </div>
-            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                <button class="btn btn-secondary btn-small" onclick="closeModal('questModal')">Cancel</button>
-                <button class="btn btn-danger btn-small" id="deleteQuestBtn" style="display: none;" onclick="deleteQuest()">Delete</button>
-                <button class="btn btn-primary btn-small" onclick="saveQuest()">Save Quest</button>
-            </div>
+      <div class="modal-content">
+        <h2
+          id="questModalTitle"
+          class="section-header"
+          style="margin-bottom: 1.5rem; font-size: 1.5rem"
+        >
+          Add New Quest
+        </h2>
+        <input type="hidden" id="questId" />
+        <input type="hidden" id="questOriginalType" />
+        <div class="form-group">
+          <label class="form-label">Quest Type</label>
+          <select id="questType" class="form-input">
+            <option value="daily">Daily Quest</option>
+            <option value="weekly">Weekly Quest</option>
+            <option value="boss">Boss Quest</option>
+          </select>
         </div>
+        <div class="form-group">
+          <label class="form-label">Quest Title</label>
+          <input
+            type="text"
+            id="questTitle"
+            class="form-input"
+            placeholder="e.g. Finish Report"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">XP Reward</label>
+          <input
+            type="number"
+            id="questXp"
+            class="form-input"
+            placeholder="e.g. 100"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time / Deadline</label>
+          <input type="date" id="questTime" class="form-input" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Difficulty</label>
+          <select id="questDifficulty" class="form-input">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: flex-end">
+          <button
+            class="btn btn-secondary btn-small"
+            onclick="closeModal('questModal')"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn btn-danger btn-small"
+            id="deleteQuestBtn"
+            style="display: none"
+            onclick="deleteQuest()"
+          >
+            Delete
+          </button>
+          <button class="btn btn-primary btn-small" onclick="saveQuest()">
+            Save Quest
+          </button>
+        </div>
+      </div>
     </div>
     <script src="levelup-frontend.js"></script>
-</body>
+  </body>
 </html>
 ```
