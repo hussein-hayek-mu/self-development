@@ -5,6 +5,10 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
+Route::get('/levelup', function () {
+    return Inertia::render('levelup');
+});
+
 // Route::get('/', function () {
 //     return Inertia::render('welcome', [
 //         'canRegister' => Features::enabled(Features::registration()),
@@ -19,4 +23,4 @@ use Laravel\Fortify\Features;
 
 
 
-require __DIR__.'/settings.php';
+require __DIR__ . '/settings.php';

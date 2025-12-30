@@ -8,13 +8,17 @@ import { initializeTheme } from './hooks/use-appearance';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
+const pages = import.meta.glob('./pages/**/*.{tsx,jsx}');
+
 createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
-    resolve: (name) =>
-        resolvePageComponent(
-            `./pages/${name}.tsx`,
-            import.meta.glob('./pages/**/*.tsx'),
-        ),
+    resolve: (name) => {
+        const tsxPath = `./pages/${name}.tsx`;
+        const jsxPath = `./pages/${name}.jsx`;
+        const pagePath = pages[tsxPath] ? tsxPath : pages[jsxPath] ? jsxPath : null;
+        if (!pagePath) throw new Error(`Page not found: ${name}`);
+        return resolvePageComponent(pagePath, pages);
+    },
     setup({ el, App, props }) {
         const root = createRoot(el);
 
