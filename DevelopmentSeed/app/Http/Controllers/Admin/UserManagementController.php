@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -115,7 +116,7 @@ class UserManagementController extends Controller
     public function destroy(User $user): RedirectResponse
     {
         // Prevent deleting self
-        if ($user->id === auth()->id()) {
+        if ($user->id === Auth::user()->id) {
             return redirect()->back()->with('error', 'You cannot delete your own account.');
         }
 

@@ -30,13 +30,6 @@ Route::middleware(['auth', 'verified'])->prefix('user')->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Profile
-    Route::prefix('profile')->name('profile.')->group(function () {
-        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
-        Route::patch('/', [ProfileController::class, 'update'])->name('update');
-        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
-    });
-
     // Habits
     Route::prefix('habits')->name('habits.')->group(function () {
         Route::get('/', [HabitController::class, 'index'])->name('index');
@@ -55,6 +48,13 @@ Route::middleware(['auth', 'verified'])->prefix('user')->group(function () {
         Route::delete('/{quest}', [QuestController::class, 'destroy'])->name('destroy');
     });
 
+});
+
+// Profile routes without email verification requirement
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 /*

@@ -28,14 +28,14 @@
 
         <!-- Streak Card -->
         <div class="game-card text-center">
-            <div class="text-4xl mb-2">🔥</div>
+            <div class="text-4xl mb-2"></div>
             <div class="text-2xl font-bold text-orange-400">{{ $user['currentStreak'] }}</div>
             <div class="text-sm text-gray-400">Day Streak</div>
         </div>
 
         <!-- Total XP Card -->
         <div class="game-card text-center">
-            <div class="text-4xl mb-2">⭐</div>
+            <div class="text-4xl mb-2"></div>
             <div class="text-2xl font-bold text-purple-400">{{ number_format($user['totalXp']) }}</div>
             <div class="text-sm text-gray-400">Total XP Earned</div>
         </div>
@@ -52,7 +52,7 @@
             
             @if($habits->isEmpty())
                 <div class="game-card text-center py-8">
-                    <div class="text-4xl mb-3">🎯</div>
+                    <div class="text-4xl mb-3"></div>
                     <p class="text-gray-400 mb-4">No habits yet. Start building your routine!</p>
                     <a href="{{ route('habits.index') }}" class="btn-primary btn-small">Add Habit</a>
                 </div>
@@ -76,7 +76,7 @@
                                 </div>
                             </div>
                             <div class="streak-badge">
-                                🔥 {{ $habit->current_streak }}
+                                 {{ $habit->current_streak }}
                             </div>
                         </div>
                     @endforeach
@@ -93,7 +93,7 @@
             
             @if($activeQuests->isEmpty())
                 <div class="game-card text-center py-8">
-                    <div class="text-4xl mb-3">⚔️</div>
+                    <div class="text-4xl mb-3"></div>
                     <p class="text-gray-400 mb-4">No active quests. Create your first quest!</p>
                     <a href="{{ route('quests.index') }}" class="btn-primary btn-small">Add Quest</a>
                 </div>
