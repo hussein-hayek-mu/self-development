@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+
+        <title><?php echo e(config('app.name', 'Level Up')); ?> - Gamify Your Life</title>
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+        <!-- Scripts -->
+        <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
+    </head>
+    <body class="font-sans antialiased bg-[#0a0a0f]">
+        <div class="min-h-screen flex flex-col items-center justify-center p-6">
+            <!-- Logo -->
+            <a href="<?php echo e(route('home')); ?>" class="logo text-4xl mb-8">LEVEL UP</a>
+
+            <!-- Auth Card -->
+            <div class="game-card w-full max-w-md">
+                <?php echo e($slot); ?>
+
+            </div>
+
+            <!-- Back to Home -->
+            <a href="<?php echo e(route('home')); ?>" class="mt-6 text-gray-400 hover:text-purple-400 transition-colors">
+                ← Back to Home
+            </a>
+        </div>
+    </body>
+</html>
+<?php /**PATH /Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeedBlade/resources/views/layouts/guest.blade.php ENDPATH**/ ?>

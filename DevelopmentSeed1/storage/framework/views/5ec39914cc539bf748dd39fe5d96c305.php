@@ -1,0 +1,1 @@
+<?php /**PATH /Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeedBlade/resources/views/about.blade.php ENDPATH**/ ?>
