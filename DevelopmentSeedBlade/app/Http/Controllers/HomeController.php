@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+/**
+ * Public marketing pages (landing, about, contact).
+ */
 class HomeController extends Controller
 {
     /**

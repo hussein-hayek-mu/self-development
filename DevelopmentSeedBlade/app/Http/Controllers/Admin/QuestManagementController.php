@@ -7,6 +7,9 @@ use App\Models\Quest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Admin-side listing, inspection, and updates for all quests.
+ */
 class QuestManagementController extends Controller
 {
     /**

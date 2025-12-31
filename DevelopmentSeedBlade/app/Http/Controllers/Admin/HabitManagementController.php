@@ -8,6 +8,9 @@ use App\Models\HabitCompletion;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Admin-side listing, inspection, and updates for all habits.
+ */
 class HabitManagementController extends Controller
 {
     /**
@@ -66,7 +69,7 @@ class HabitManagementController extends Controller
     public function show(Habit $habit)
     {
         $habit->load('user');
-        
+
         $recentCompletions = HabitCompletion::where('habit_id', $habit->id)
             ->orderBy('completion_date', 'desc')
             ->take(10)

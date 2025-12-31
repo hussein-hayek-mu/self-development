@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
+/**
+ * Handles login view, authentication, and logout lifecycle.
+ */
 class AuthenticatedSessionController extends Controller
 {
     /**

@@ -8,6 +8,9 @@ use App\Models\Quest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+/**
+ * Admin overview of platform-wide stats and leaderboards.
+ */
 class AdminDashboardController extends Controller
 {
     /**

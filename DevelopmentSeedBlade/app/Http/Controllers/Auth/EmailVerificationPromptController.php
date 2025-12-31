@@ -7,6 +7,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+/**
+ * Prompts logged-in users to verify their email addresses.
+ */
 class EmailVerificationPromptController extends Controller
 {
     /**
@@ -15,7 +18,7 @@ class EmailVerificationPromptController extends Controller
     public function __invoke(Request $request): RedirectResponse|View
     {
         return $request->user()->hasVerifiedEmail()
-                    ? redirect()->intended(route('dashboard', absolute: false))
-                    : view('auth.verify-email');
+            ? redirect()->intended(route('dashboard', absolute: false))
+            : view('auth.verify-email');
     }
 }

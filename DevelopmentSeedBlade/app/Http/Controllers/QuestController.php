@@ -6,6 +6,9 @@ use App\Models\Quest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
+/**
+ * CRUD and completion handling for a user's quests.
+ */
 class QuestController extends Controller
 {
     /**

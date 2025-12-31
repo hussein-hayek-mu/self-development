@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+/**
+ * Profile view, updates, and account deletion for the logged-in user.
+ */
 class ProfileController extends Controller
 {
     /**

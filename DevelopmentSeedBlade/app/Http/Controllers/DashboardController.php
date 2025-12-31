@@ -6,6 +6,9 @@ use App\Models\Habit;
 use App\Models\Quest;
 use Illuminate\Http\Request;
 
+/**
+ * Authenticated user dashboard data aggregation.
+ */
 class DashboardController extends Controller
 {
     /**

@@ -31,7 +31,6 @@ Route::middleware(['auth', 'verified'])->prefix('user')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Profile
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/', [ProfileController::class, 'edit'])->name('edit');
         Route::patch('/', [ProfileController::class, 'update'])->name('update');

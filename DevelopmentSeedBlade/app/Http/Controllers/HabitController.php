@@ -6,6 +6,9 @@ use App\Models\Habit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
+/**
+ * CRUD and toggles for a user's own habits.
+ */
 class HabitController extends Controller
 {
     /**

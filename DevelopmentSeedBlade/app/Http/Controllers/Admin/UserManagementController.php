@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
+/**
+ * Admin CRUD, banning, and stats for any user account.
+ */
 class UserManagementController extends Controller
 {
     /**
