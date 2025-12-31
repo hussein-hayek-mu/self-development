@@ -6,9 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-/**
- * Sends and throttles email verification notifications.
- */
 class EmailVerificationNotificationController extends Controller
 {
     /**
