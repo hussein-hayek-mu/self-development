@@ -40,6 +40,11 @@ class User extends Authenticatable
         'last_activity_date',
         'rank_title',
         'avatar_url',
+        'role',
+        'title',
+        'is_banned',
+        'banned_at',
+        'last_login_at',
     ];
 
     /**
@@ -63,7 +68,18 @@ class User extends Authenticatable
         'total_xp' => 'integer',
         'current_streak' => 'integer',
         'longest_streak' => 'integer',
+        'is_banned' => 'boolean',
+        'banned_at' => 'datetime',
+        'last_login_at' => 'datetime',
     ];
+
+    /**
+     * Check if user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 
     public function habits()
     {
