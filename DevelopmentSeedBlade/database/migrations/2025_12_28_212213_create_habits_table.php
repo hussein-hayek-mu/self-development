@@ -15,19 +15,19 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->integer('xp_reward')->default(50);
-            $table->integer('current_streak')->default(0);
-            $table->integer('best_streak')->default(0);
-            $table->integer('total_completions')->default(0);
-            $table->boolean('is_active')->default(true);
-            $table->enum('frequency', ['daily', 'weekly', 'monthly'])->default('daily'); //Creates a column named frequency that can only accept these three specific values
             $table->string('icon')->nullable();
+            $table->enum('difficulty', ['easy', 'medium', 'hard'])->default('medium');
+            $table->integer('xp_reward')->default(50);
+            $table->enum('frequency', ['daily', 'weekly', 'monthly'])->default('daily');
+            $table->integer('current_streak')->default(0);
+            $table->integer('longest_streak')->default(0);
+            $table->integer('times_completed')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->string('color')->default('#a855f7');
             $table->timestamps();
-            $table->index('user_id');
-
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->index('user_id');
         });
     }
 

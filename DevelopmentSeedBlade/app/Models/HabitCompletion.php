@@ -15,13 +15,13 @@ class HabitCompletion extends Model
     protected $fillable = [
         'habit_id',
         'user_id',
-        'completed_date',
+        'completion_date',
         'xp_earned',
         'notes',
     ];
 
     protected $casts = [
-        'completed_date' => 'date',
+        'completion_date' => 'date',
         'xp_earned' => 'integer',
     ];
 

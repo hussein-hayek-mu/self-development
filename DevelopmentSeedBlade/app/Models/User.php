@@ -31,9 +31,12 @@ class User extends Authenticatable
         'password',
         'role',
         'is_active',
+        'is_banned',
+        'banned_at',
+        'last_login_at',
         'level',
         'xp',
-        'xp_to_next',
+        'xp_to_next_level',
         'total_xp',
         'current_streak',
         'longest_streak',
@@ -59,10 +62,14 @@ class User extends Authenticatable
         'last_activity_date' => 'date',
         'level' => 'integer',
         'xp' => 'integer',
-        'xp_to_next' => 'integer',
+        'xp_to_next_level' => 'integer',
         'total_xp' => 'integer',
         'current_streak' => 'integer',
         'longest_streak' => 'integer',
+        'is_banned' => 'boolean',
+        'is_active' => 'boolean',
+        'banned_at' => 'datetime',
+        'last_login_at' => 'datetime',
     ];
 
     public function habits()
@@ -117,10 +124,10 @@ class User extends Authenticatable
         $this->total_xp += $amount;
 
         // Check for level up
-        while ($this->xp >= $this->xp_to_next) {
-            $this->xp -= $this->xp_to_next;
+        while ($this->xp >= $this->xp_to_next_level) {
+            $this->xp -= $this->xp_to_next_level;
             $this->level++;
-            $this->xp_to_next = $this->calculateNextLevelXP();
+            $this->xp_to_next_level = $this->calculateNextLevelXP();
         }
 
         $this->save();
@@ -156,7 +163,7 @@ class User extends Authenticatable
     {
         return $this->habits()
             ->with(['completions' => function ($query) {
-                $query->whereDate('completed_date', now()->toDateString());
+                $query->whereDate('completion_date', now()->toDateString());
             }])
             ->get()
             ->map(function ($habit) {

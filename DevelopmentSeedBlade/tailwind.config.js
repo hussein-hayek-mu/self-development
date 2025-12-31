@@ -12,7 +12,13 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                display: ['Orbitron', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                'game-dark': '#0a0a0f',
+                'game-card': '#12121a',
+                'game-card-hover': '#1a1a25',
             },
         },
     },

@@ -15,13 +15,14 @@ use HasFactory;
         'user_id',
         'title',
         'description',
-        'xp_reward',
-        'current_streak',
-        'best_streak',
-        'total_completions',
-        'is_active',
-        'frequency',
         'icon',
+        'difficulty',
+        'xp_reward',
+        'frequency',
+        'current_streak',
+        'longest_streak',
+        'times_completed',
+        'is_active',
         'color',
     ];
 
@@ -29,8 +30,8 @@ use HasFactory;
         'is_active' => 'boolean',
         'xp_reward' => 'integer',
         'current_streak' => 'integer',
-        'best_streak' => 'integer',
-        'total_completions' => 'integer',
+        'longest_streak' => 'integer',
+        'times_completed' => 'integer',
     ];
 
     public function user()
@@ -48,7 +49,7 @@ use HasFactory;
         $today = now()->toDateString();
 
         $existing = $this->completions()
-            ->where('completed_date', $today)
+            ->where('completion_date', $today)
             ->first();
 
         if ($existing) {
@@ -58,16 +59,16 @@ use HasFactory;
         // Create completion record
         $completion = $this->completions()->create([
             'user_id' => $this->user_id,
-            'completed_date' => $today,
+            'completion_date' => $today,
             'xp_earned' => $this->xp_reward,
         ]);
 
         // Update habit stats
-        $this->increment('total_completions');
+        $this->increment('times_completed');
         $this->increment('current_streak');
 
-        if ($this->current_streak > $this->best_streak) {
-            $this->best_streak = $this->current_streak;
+        if ($this->current_streak > $this->longest_streak) {
+            $this->longest_streak = $this->current_streak;
             $this->save();
         }
 
@@ -83,7 +84,7 @@ use HasFactory;
         $today = now()->toDateString();
 
         $completion = $this->completions()
-            ->where('completed_date', $today)
+            ->where('completion_date', $today)
             ->first();
 
         if ($completion) {
@@ -94,7 +95,7 @@ use HasFactory;
 
             // Delete completion and update stats
             $completion->delete();
-            $this->decrement('total_completions');
+            $this->decrement('times_completed');
             $this->decrement('current_streak');
         }
     }
@@ -102,7 +103,7 @@ use HasFactory;
     public function isCompletedToday(): bool
     {
         return $this->completions()
-            ->where('completed_date', now()->toDateString())
+            ->where('completion_date', now()->toDateString())
             ->exists();
     }
 }
