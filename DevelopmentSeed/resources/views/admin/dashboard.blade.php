@@ -9,7 +9,7 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
         <div class="game-card">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center text-2xl">👥</div>
+                <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center text-2xl"></div>
                 <div>
                     <div class="text-2xl font-bold text-white">{{ number_format($stats['totalUsers']) }}</div>
                     <div class="text-sm text-gray-400">Total Users</div>
@@ -18,7 +18,7 @@
         </div>
         <div class="game-card">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center text-2xl">✅</div>
+                <div class="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center text-2xl"></div>
                 <div>
                     <div class="text-2xl font-bold text-white">{{ number_format($stats['activeUsers']) }}</div>
                     <div class="text-sm text-gray-400">Active (7 days)</div>
@@ -27,7 +27,7 @@
         </div>
         <div class="game-card">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-lg bg-orange-500/20 flex items-center justify-center text-2xl">🔥</div>
+                <div class="w-12 h-12 rounded-lg bg-orange-500/20 flex items-center justify-center text-2xl"></div>
                 <div>
                     <div class="text-2xl font-bold text-white">{{ number_format($stats['totalHabits']) }}</div>
                     <div class="text-sm text-gray-400">Total Habits</div>
@@ -36,7 +36,7 @@
         </div>
         <div class="game-card">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center text-2xl">⚔️</div>
+                <div class="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center text-2xl"></div>
                 <div>
                     <div class="text-2xl font-bold text-white">{{ number_format($stats['totalQuests']) }}</div>
                     <div class="text-sm text-gray-400">Total Quests</div>
@@ -157,7 +157,7 @@
                                 </td>
                                 <td class="text-gray-400">{{ number_format($user->total_xp ?? 0) }}</td>
                                 <td>
-                                    <span class="streak-badge text-xs">🔥 {{ $user->current_streak ?? 0 }}</span>
+                                    <span class="streak-badge text-xs">{{ $user->current_streak ?? 0 }}</span>
                                 </td>
                             </tr>
                         @empty

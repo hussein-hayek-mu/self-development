@@ -61,7 +61,10 @@
             <div class="grid md:grid-cols-3 gap-8">
                 @foreach($features as $feature)
                 <div class="game-card text-center hover:scale-105 transform transition-transform">
-                    <div class="text-5xl mb-4">{{ $feature['icon'] }}</div>
+                    <div class="text-5xl mb-4 text-purple-500">
+                        <!-- Icon Placeholder -->
+                        <div class="w-12 h-12 mx-auto bg-purple-500/20 rounded-full"></div>
+                    </div>
                     <h3 class="text-xl font-bold mb-3">{{ $feature['title'] }}</h3>
                     <p class="text-gray-400">{{ $feature['description'] }}</p>
                 </div>
@@ -115,21 +118,21 @@
                 <h2 class="text-4xl font-bold text-center mb-8" style="font-family: 'Orbitron', sans-serif;">Contact Us</h2>
                 <div class="space-y-6">
                     <div class="flex items-center gap-4 p-4 bg-purple-500/10 rounded-lg">
-                        <span class="text-2xl">📧</span>
+                        <div class="w-8 h-8 rounded bg-purple-500/20"></div>
                         <div>
                             <div class="text-sm text-gray-400">Email</div>
                             <div class="text-white">{{ $contact['email'] }}</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-4 p-4 bg-purple-500/10 rounded-lg">
-                        <span class="text-2xl">💬</span>
+                        <div class="w-8 h-8 rounded bg-purple-500/20"></div>
                         <div>
                             <div class="text-sm text-gray-400">Discord</div>
                             <div class="text-white">{{ $contact['discord'] }}</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-4 p-4 bg-purple-500/10 rounded-lg">
-                        <span class="text-2xl">🐦</span>
+                        <div class="w-8 h-8 rounded bg-purple-500/20"></div>
                         <div>
                             <div class="text-sm text-gray-400">Twitter</div>
                             <div class="text-white">{{ $contact['twitter'] }}</div>
