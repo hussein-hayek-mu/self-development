@@ -47,20 +47,20 @@
                 <!-- Navigation -->
                 <nav class="flex-1 space-y-2">
                     <a href="{{ route('dashboard') }}" class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                        <span>🏠</span> Dashboard
+                        <span></span> Dashboard
                     </a>
                     <a href="{{ route('habits.index') }}" class="sidebar-link {{ request()->routeIs('habits.*') ? 'active' : '' }}">
-                        <span>🔥</span> Habits
+                        <span></span> Habits
                     </a>
                     <a href="{{ route('quests.index') }}" class="sidebar-link {{ request()->routeIs('quests.*') ? 'active' : '' }}">
-                        <span>⚔️</span> Quests
+                        <span></span> Quests
                     </a>
                     <a href="{{ route('profile.edit') }}" class="sidebar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">
-                        <span>👤</span> Profile
+                        <span></span> Profile
                     </a>
                     @if(Auth::user()->role === 'admin')
                     <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.*') ? 'active' : '' }}">
-                        <span>⚙️</span> Admin Panel
+                        <span></span> Admin Panel
                     </a>
                     @endif
                 </nav>
@@ -69,7 +69,7 @@
                 <form method="POST" action="{{ route('logout') }}" class="mt-auto">
                     @csrf
                     <button type="submit" class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/10">
-                        <span>🚪</span> Logout
+                        <span></span> Logout
                     </button>
                 </form>
             </aside>
@@ -95,7 +95,7 @@
         <!-- Level Up Modal -->
         <div id="levelUpModal" class="modal-overlay">
             <div class="modal-content text-center">
-                <div class="text-6xl mb-4">🎉</div>
+                <div class="text-6xl mb-4"></div>
                 <h2 class="text-3xl font-bold text-purple-400 mb-2" style="font-family: 'Orbitron', sans-serif;">LEVEL UP!</h2>
                 <p class="text-xl text-gray-300 mb-6">You've reached Level <span id="newLevel">2</span>!</p>
                 <button onclick="closeLevelUpModal()" class="btn-primary">Continue</button>

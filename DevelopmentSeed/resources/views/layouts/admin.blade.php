@@ -36,22 +36,22 @@
                 <!-- Admin Navigation -->
                 <nav class="flex-1 space-y-2">
                     <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        <span>📊</span> Dashboard
+                        <span></span> Dashboard
                     </a>
                     <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
-                        <span>👥</span> Users
+                        <span></span> Users
                     </a>
                     <a href="{{ route('admin.habits.index') }}" class="sidebar-link {{ request()->routeIs('admin.habits.*') ? 'active' : '' }}">
-                        <span>🔥</span> Habits
+                        <span></span> Habits
                     </a>
                     <a href="{{ route('admin.quests.index') }}" class="sidebar-link {{ request()->routeIs('admin.quests.*') ? 'active' : '' }}">
-                        <span>⚔️</span> Quests
+                        <span></span> Quests
                     </a>
                     
                     <div class="border-t border-purple-500/20 my-4"></div>
                     
                     <a href="{{ route('dashboard') }}" class="sidebar-link">
-                        <span>🏠</span> User Dashboard
+                        <span></span> User Dashboard
                     </a>
                 </nav>
 
@@ -59,7 +59,7 @@
                 <form method="POST" action="{{ route('logout') }}" class="mt-auto">
                     @csrf
                     <button type="submit" class="sidebar-link w-full text-red-400 hover:text-red-300 hover:bg-red-500/10">
-                        <span>🚪</span> Logout
+                        <span></span> Logout
                     </button>
                 </form>
             </aside>

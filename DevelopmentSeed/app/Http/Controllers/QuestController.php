@@ -20,7 +20,7 @@ class QuestController extends Controller
 
         $dailyQuests = Quest::where('user_id', $userId)
             ->where('type', 'daily')
-            ->orderByRaw("CASE status WHEN 'active' THEN 1 WHEN 'completed' THEN 2 ELSE 3 END")
+            ->orderByRaw("FIELD(status, 'active', 'completed', 'failed')")
             ->orderBy('due_date')
             ->get();
 
