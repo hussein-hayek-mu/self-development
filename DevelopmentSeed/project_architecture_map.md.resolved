@@ -1,0 +1,66 @@
+# Project Architecture Map: "The Life of a Request"
+
+This document traces how your application works, layer by layer. Use this to explain your project to others (or yourself).
+
+---
+
+## 🏗 Layer 1: The Foundation (Database & Migrations)
+**Goal:** Define *what* data we store.
+
+### 1. The Users Table (`database/migrations/...create_users_table.php`)
+*   **Key Fields:** [id](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Middleware/AdminMiddleware.php#9-29), `name`, `email`, `role` (admin/user), `xp`, `level`.
+*   **Why:** Stores the player's progress and identity. The `xp` and `level` columns turn a regular user row into a "player" profile.
+
+### 2. The Habits Table (`database/migrations/...create_habits_table.php`)
+*   **Key Fields:** `user_id` (FK), `title`, `frequency`, `current_streak`.
+*   **Why:** Stores the tasks. `user_id` links it to the `users` table so we know *whose* habit this is.
+
+---
+
+## 🧠 Layer 2: The Brain (Models)
+**Goal:** Define *how* data behaves.
+
+### 1. [User.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/User.php) ([app/Models/User.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/User.php))
+*   **Logic:** [addXP($amount)](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/User.php#121-135).
+*   **Why:** We don't just update the DB column directly; we use this method so we can *also* check for level-ups automatically.
+*   **Relationships:** `hasMany(Habit::class)`. This tells Laravel "If I have a `$user`, I can get their `$user->habits` instantly."
+
+### 2. [Habit.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/Habit.php) ([app/Models/Habit.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/Habit.php))
+*   **Logic:** [complete()](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/QuestController.php#111-131).
+*   **Why:** When a habit is finished, we don't just mark it done. We:
+    1.  Create a `HabitCompletion` record (for history).
+    2.  Increment the `current_streak`.
+    3.  Call `$this->user->addXP()` to reward the player.
+*   **Crucial Concept:** The Model handles the **Business Logic** (the rules of the game).
+
+---
+
+## 🚦 Layer 3: The Traffic Cop (Routes)
+**Goal:** Define *how* users access the features.
+
+### [routes/web.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/routes/web.php)
+*   **The Grouping:** `middleware(['auth'])`.
+    *   **Why:** Stops strangers from seeing private data.
+*   **The Route:** `Route::post('/user/habits', [HabitController::class, 'store'])`.
+    *   **Translation:** "If an authenticated user sends a POST request to `/user/habits`, send them to the [store](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/HabitController.php#26-56) method of the [HabitController](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/HabitController.php#12-131)."
+
+---
+
+## ⚙️ Layer 4: The Coordinator (Controllers)
+**Goal:** Connect the user (Request) to the logic (Model).
+
+### [HabitController.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/HabitController.php)
+**Method: [store(Request $request)](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/HabitController.php#26-56)**
+1.  **Validate:** `request->validate(...)`. Checks if the title exists. If not, error immediately.
+2.  **Create:** Calls `Habit::create(...)`. It takes the valid data and puts it in the DB.
+3.  **Redirect:** `return redirect()->back()`. Sends the user back to the dashboard to see their new habit.
+
+---
+
+## 🔄 Summary: The Full Flow
+**Scenario: User creates a new Habit.**
+1.  **Browser:** Sends data to `/user/habits` (Route).
+2.  **Route:** Checks if logged in (`auth` middleware), passes to `HabitController::store`.
+3.  **Controller:** Checks if data is valid ("Read 20 pages").
+4.  **Model ([Habit](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/Habit.php#10-110)):** Saves the row to the [habits](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/User.php#75-79) table (Migration).
+5.  **Response:** User sees "Habit created!" on their screen.
