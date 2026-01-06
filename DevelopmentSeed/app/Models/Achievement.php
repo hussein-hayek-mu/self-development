@@ -66,7 +66,7 @@ class Achievement extends Model
                 ]
             ]);
 
-            // Award XP
+            
             $user->addXP($this->xp_reward);
 
             return true;

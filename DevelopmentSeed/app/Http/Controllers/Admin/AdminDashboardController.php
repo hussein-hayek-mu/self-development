@@ -8,17 +8,13 @@ use App\Models\Quest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-/**
- * Admin overview of platform-wide stats and leaderboards.
- */
+
 class AdminDashboardController extends Controller
 {
-    /**
-     * Display the admin dashboard.
-     */
+    
     public function index()
     {
-        // Get statistics
+        
         $stats = [
             'totalUsers' => User::count(),
             'activeUsers' => User::where('last_activity_date', '>=', now()->subDays(7))->count(),
@@ -32,12 +28,12 @@ class AdminDashboardController extends Controller
             'averageLevel' => round(User::avg('level') ?? 1, 1),
         ];
 
-        // Get recent users
+        
         $recentUsers = User::orderBy('created_at', 'desc')
             ->take(10)
             ->get(['id', 'name', 'email', 'level', 'xp', 'created_at', 'rank_title']);
 
-        // Get top users by level
+        
         $topUsers = User::orderBy('level', 'desc')
             ->orderBy('total_xp', 'desc')
             ->take(10)

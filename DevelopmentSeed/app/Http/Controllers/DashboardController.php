@@ -6,25 +6,21 @@ use App\Models\Habit;
 use App\Models\Quest;
 use Illuminate\Http\Request;
 
-/**
- * Authenticated user dashboard data aggregation.
- */
+
 class DashboardController extends Controller
 {
-    /**
-     * Display the user dashboard.
-     */
+    
     public function index(Request $request)
     {
         $user = $request->user();
 
-        // Get user's habits for today with completion status
+        
         $habits = $user->getTodayHabits();
 
-        // Get active quests
+        
         $activeQuests = $user->getActiveQuests();
 
-        // Calculate XP progress
+        
         $currentXp = $user->xp ?? 0;
         $level = $user->level ?? 1;
         $xpForNextLevel = $user->xp_to_next_level ?? $user->calculateNextLevelXP();

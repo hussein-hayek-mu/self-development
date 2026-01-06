@@ -6,14 +6,10 @@ use App\Models\Habit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-/**
- * CRUD and toggles for a user's own habits.
- */
+
 class HabitController extends Controller
 {
-    /**
-     * Display a listing of habits.
-     */
+    
     public function index(Request $request)
     {
         $habits = $request->user()->getTodayHabits();
@@ -23,9 +19,7 @@ class HabitController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created habit.
-     */
+    
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -54,12 +48,10 @@ class HabitController extends Controller
         return redirect()->back()->with('success', 'Habit created successfully!');
     }
 
-    /**
-     * Update the specified habit.
-     */
+    
     public function update(Request $request, Habit $habit): RedirectResponse
     {
-        // Ensure user owns the habit
+        
         if ($habit->user_id !== $request->user()->id) {
             abort(403);
         }
@@ -79,12 +71,10 @@ class HabitController extends Controller
         return redirect()->back()->with('success', 'Habit updated successfully!');
     }
 
-    /**
-     * Toggle habit completion for today.
-     */
+    
     public function toggle(Request $request, Habit $habit): RedirectResponse
     {
-        // Ensure user owns the habit
+        
         if ($habit->user_id !== $request->user()->id) {
             abort(403);
         }
@@ -95,30 +85,28 @@ class HabitController extends Controller
             ->first();
 
         if ($existingCompletion) {
-            // Uncomplete: remove the completion record
+            
             $existingCompletion->delete();
 
-            // Decrease streak
+            
             $habit->current_streak = max(0, $habit->current_streak - 1);
             $habit->times_completed = max(0, $habit->times_completed - 1);
             $habit->save();
         } else {
-            // Complete the habit using the model method
+            
             $habit->complete();
 
-            // Update user streak
+            
             $request->user()->updateStreak();
         }
 
         return redirect()->back();
     }
 
-    /**
-     * Remove the specified habit.
-     */
+    
     public function destroy(Request $request, Habit $habit): RedirectResponse
     {
-        // Ensure user owns the habit
+        
         if ($habit->user_id !== $request->user()->id) {
             abort(403);
         }

@@ -6,14 +6,10 @@ use App\Models\Quest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-/**
- * CRUD and completion handling for a user's quests.
- */
+
 class QuestController extends Controller
 {
-    /**
-     * Display a listing of quests.
-     */
+    
     public function index(Request $request)
     {
         $userId = $request->user()->id;
@@ -43,9 +39,7 @@ class QuestController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created quest.
-     */
+    
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -58,7 +52,7 @@ class QuestController extends Controller
             'icon' => 'nullable|string|max:50',
         ]);
 
-        // Adjust XP based on difficulty
+        
         $difficultyMultiplier = match ($validated['difficulty']) {
             'easy' => 1,
             'medium' => 1.5,
@@ -83,12 +77,10 @@ class QuestController extends Controller
         return redirect()->back()->with('success', 'Quest created successfully!');
     }
 
-    /**
-     * Update the specified quest.
-     */
+    
     public function update(Request $request, Quest $quest): RedirectResponse
     {
-        // Ensure user owns the quest
+        
         if ($quest->user_id !== $request->user()->id) {
             abort(403);
         }
@@ -108,33 +100,29 @@ class QuestController extends Controller
         return redirect()->back()->with('success', 'Quest updated successfully!');
     }
 
-    /**
-     * Mark quest as completed.
-     */
+    
     public function complete(Request $request, Quest $quest): RedirectResponse
     {
-        // Ensure user owns the quest
+        
         if ($quest->user_id !== $request->user()->id) {
             abort(403);
         }
 
         if ($quest->status !== 'completed') {
-            // Use the model's complete method which handles XP
+            
             $quest->complete();
 
-            // Update user streak
+            
             $request->user()->updateStreak();
         }
 
         return redirect()->back()->with('success', 'Quest completed! XP awarded!');
     }
 
-    /**
-     * Remove the specified quest.
-     */
+    
     public function destroy(Request $request, Quest $quest): RedirectResponse
     {
-        // Ensure user owns the quest
+        
         if ($quest->user_id !== $request->user()->id) {
             abort(403);
         }

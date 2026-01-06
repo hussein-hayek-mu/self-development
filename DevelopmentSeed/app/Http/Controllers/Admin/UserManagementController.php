@@ -8,19 +8,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-/**
- * Admin CRUD, banning, and stats for any user account.
- */
+
 class UserManagementController extends Controller
 {
-    /**
-     * Display a listing of users.
-     */
+    
     public function index(Request $request)
     {
         $query = User::query();
 
-        // Search functionality
+        
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -29,12 +25,12 @@ class UserManagementController extends Controller
             });
         }
 
-        // Filter by role
+        
         if ($request->has('role') && $request->role) {
             $query->where('role', $request->role);
         }
 
-        // Sorting
+        
         $sortField = $request->get('sort', 'created_at');
         $sortDirection = $request->get('direction', 'desc');
         $query->orderBy($sortField, $sortDirection);
@@ -52,9 +48,7 @@ class UserManagementController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified user.
-     */
+    
     public function show(User $user)
     {
         $user->load(['habits', 'quests']);
@@ -77,9 +71,7 @@ class UserManagementController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified user.
-     */
+    
     public function update(Request $request, User $user): RedirectResponse
     {
         $validated = $request->validate([
@@ -96,9 +88,7 @@ class UserManagementController extends Controller
         return redirect()->back()->with('success', 'User updated successfully!');
     }
 
-    /**
-     * Ban/Unban a user.
-     */
+    
     public function toggleBan(User $user): RedirectResponse
     {
         $user->is_banned = !$user->is_banned;
@@ -110,12 +100,10 @@ class UserManagementController extends Controller
         return redirect()->back()->with('success', $message);
     }
 
-    /**
-     * Remove the specified user.
-     */
+    
     public function destroy(User $user): RedirectResponse
     {
-        // Prevent deleting self
+        
         if ($user->id === Auth::user()->id) {
             return redirect()->back()->with('error', 'You cannot delete your own account.');
         }

@@ -4,14 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-/**
- * Public marketing pages (landing, about, contact).
- */
+
 class HomeController extends Controller
 {
-    /**
-     * Display the landing page.
-     */
+    
     public function index()
     {
         return view('home', [
@@ -41,17 +37,13 @@ class HomeController extends Controller
         ]);
     }
 
-    /**
-     * Display the about page.
-     */
+    
     public function about()
     {
         return view('about');
     }
 
-    /**
-     * Display the contact page.
-     */
+    
     public function contact()
     {
         return view('contact');

@@ -7,19 +7,15 @@ use App\Models\Quest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-/**
- * Admin-side listing, inspection, and updates for all quests.
- */
+
 class QuestManagementController extends Controller
 {
-    /**
-     * Display a listing of all quests.
-     */
+    
     public function index(Request $request)
     {
         $query = Quest::with('user');
 
-        // Search functionality
+        
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -30,24 +26,24 @@ class QuestManagementController extends Controller
             });
         }
 
-        // Filter by type
+        
         if ($request->has('type') && $request->type) {
             $query->where('type', $request->type);
         }
 
-        // Filter by status
+        
         if ($request->has('status') && $request->status) {
             $query->where('status', $request->status);
         }
 
-        // Sorting
+        
         $sortField = $request->get('sort', 'created_at');
         $sortDirection = $request->get('direction', 'desc');
         $query->orderBy($sortField, $sortDirection);
 
         $quests = $query->paginate(15)->withQueryString();
 
-        // Get statistics
+        
         $stats = [
             'total' => Quest::count(),
             'active' => Quest::where('status', 'active')->count(),
@@ -68,9 +64,7 @@ class QuestManagementController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified quest.
-     */
+    
     public function show(Quest $quest)
     {
         $quest->load('user');
@@ -80,9 +74,7 @@ class QuestManagementController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified quest.
-     */
+    
     public function update(Request $request, Quest $quest): RedirectResponse
     {
         $validated = $request->validate([
@@ -98,7 +90,7 @@ class QuestManagementController extends Controller
 
         $quest->update($validated);
 
-        // If status changed to completed, set completed_at
+        
         if ($validated['status'] === 'completed' && !$quest->completed_at) {
             $quest->completed_at = now();
             $quest->save();
@@ -107,9 +99,7 @@ class QuestManagementController extends Controller
         return redirect()->back()->with('success', 'Quest updated successfully!');
     }
 
-    /**
-     * Remove the specified quest.
-     */
+    
     public function destroy(Quest $quest): RedirectResponse
     {
         $quest->delete();

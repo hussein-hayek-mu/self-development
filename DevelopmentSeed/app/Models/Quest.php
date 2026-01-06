@@ -62,7 +62,7 @@ class Quest extends Model
             'progress' => $this->target,
         ]);
 
-        // Add XP to user
+        
         $this->user->addXP($this->xp_reward);
 
         return $completion;

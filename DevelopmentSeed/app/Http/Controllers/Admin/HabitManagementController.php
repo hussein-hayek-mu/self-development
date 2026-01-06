@@ -8,19 +8,15 @@ use App\Models\HabitCompletion;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-/**
- * Admin-side listing, inspection, and updates for all habits.
- */
+
 class HabitManagementController extends Controller
 {
-    /**
-     * Display a listing of all habits.
-     */
+    
     public function index(Request $request)
     {
         $query = Habit::with('user');
 
-        // Search functionality
+        
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -31,19 +27,19 @@ class HabitManagementController extends Controller
             });
         }
 
-        // Filter by difficulty
+        
         if ($request->has('difficulty') && $request->difficulty) {
             $query->where('difficulty', $request->difficulty);
         }
 
-        // Sorting
+        
         $sortField = $request->get('sort', 'created_at');
         $sortDirection = $request->get('direction', 'desc');
         $query->orderBy($sortField, $sortDirection);
 
         $habits = $query->paginate(15)->withQueryString();
 
-        // Get statistics
+        
         $stats = [
             'total' => Habit::count(),
             'completedToday' => HabitCompletion::whereDate('completion_date', today())->count(),
@@ -63,9 +59,7 @@ class HabitManagementController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified habit.
-     */
+    
     public function show(Habit $habit)
     {
         $habit->load('user');
@@ -81,9 +75,7 @@ class HabitManagementController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified habit.
-     */
+    
     public function update(Request $request, Habit $habit): RedirectResponse
     {
         $validated = $request->validate([
@@ -100,9 +92,7 @@ class HabitManagementController extends Controller
         return redirect()->back()->with('success', 'Habit updated successfully!');
     }
 
-    /**
-     * Remove the specified habit.
-     */
+    
     public function destroy(Habit $habit): RedirectResponse
     {
         $habit->delete();

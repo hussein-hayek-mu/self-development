@@ -10,12 +10,10 @@ use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
+    
     public function run(): void
     {
-        // Create Admin User
+        
         $admin = User::create([
             'name' => 'Admin User',
             'email' => 'admin@levelup.com',
@@ -29,7 +27,7 @@ class DatabaseSeeder extends Seeder
             'rank_title' => 'Dungeon Master',
         ]);
 
-        // Create Demo User
+        
         $user = User::create([
             'name' => 'Demo Player',
             'email' => 'demo@levelup.com',
@@ -43,7 +41,7 @@ class DatabaseSeeder extends Seeder
             'rank_title' => 'Apprentice',
         ]);
 
-        // Create additional users
+        
         $users = [
             ['name' => 'Sarah Connor', 'email' => 'sarah@example.com', 'level' => 8, 'total_xp' => 3200],
             ['name' => 'John Smith', 'email' => 'john@example.com', 'level' => 3, 'total_xp' => 850],
@@ -66,7 +64,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Create Habits for Demo User
+        
         $habits = [
             ['title' => 'Morning Meditation', 'icon' => '🧘', 'description' => 'Start the day with 10 minutes of mindfulness', 'difficulty' => 'easy', 'xp_reward' => 15, 'current_streak' => 7],
             ['title' => 'Exercise', 'icon' => '💪', 'description' => '30 minutes of physical activity', 'difficulty' => 'medium', 'xp_reward' => 25, 'current_streak' => 5],
@@ -91,7 +89,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Create Quests for Demo User
+        
         $quests = [
             ['title' => 'Complete 5 Habits Today', 'type' => 'daily', 'description' => 'Finish at least 5 habits in a single day', 'xp_reward' => 50, 'target' => 5, 'progress' => 3, 'status' => 'active'],
             ['title' => 'Read a Book', 'type' => 'weekly', 'description' => 'Complete reading an entire book this week', 'xp_reward' => 150, 'target' => 1, 'progress' => 0, 'status' => 'active'],
@@ -116,7 +114,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Create some habits for admin too
+        
         Habit::create([
             'user_id' => $admin->id,
             'title' => 'Review User Reports',

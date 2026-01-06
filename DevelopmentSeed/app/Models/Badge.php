@@ -34,12 +34,12 @@ class Badge extends Model
 
     public function checkAndAward(User $user): bool
     {
-        // Check if user already has this badge
+        
         if ($user->badges()->where('badge_id', $this->id)->exists()) {
             return false;
         }
 
-        // Check if user meets requirements
+        
         $meetsRequirement = match($this->requirement_type) {
             'habits_completed' => $user->habitCompletions()->count() >= $this->required_value,
             'quests_completed' => $user->questCompletions()->count() >= $this->required_value,

@@ -56,14 +56,14 @@ use HasFactory;
             return $existing;
         }
 
-        // Create completion record
+        
         $completion = $this->completions()->create([
             'user_id' => $this->user_id,
             'completion_date' => $today,
             'xp_earned' => $this->xp_reward,
         ]);
 
-        // Update habit stats
+        
         $this->increment('times_completed');
         $this->increment('current_streak');
 
@@ -72,7 +72,7 @@ use HasFactory;
             $this->save();
         }
 
-        // Add XP to user
+        
         $this->user->addXP($this->xp_reward);
         $this->user->updateStreak();
 
@@ -88,12 +88,12 @@ use HasFactory;
             ->first();
 
         if ($completion) {
-            // Remove XP from user
+            
             $this->user->xp -= $this->xp_reward;
             $this->user->total_xp -= $this->xp_reward;
             $this->user->save();
 
-            // Delete completion and update stats
+            
             $completion->delete();
             $this->decrement('times_completed');
             $this->decrement('current_streak');
