@@ -1,0 +1,803 @@
+# DevelopmentSeed: Final Project Submission
+
+## 1. Database Schema & Migrations
+
+The foundation of **DevelopmentSeed** is a highly normalized relational database designed to support scalable gamification. Below is the complete schema definition for the application.
+
+### 1.1 Core Identity & Game State
+**Users Table**
+Stores the player's identity and their current game state (XP, Level, Streak).
+*   `xp` and `level`: Tracking progress.
+*   `streak`: Tracking consistency.
+```php
+// 2014_10_12_000000_create_users_table.php
+Schema::create('users', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('email')->unique();
+    $table->enum('role', ['user', 'admin'])->default('user');
+    $table->string('password');
+    $table->timestamps();
+
+    // Gamification State
+    $table->integer('level')->default(1);
+    $table->integer('xp')->default(0);
+    $table->integer('total_xp')->default(0);
+    $table->integer('xp_to_next_level')->default(100);
+    $table->integer('current_streak')->default(0);
+    $table->integer('longest_streak')->default(0);
+    $table->date('last_activity_date')->nullable();
+    $table->string('rank_title')->default('Beginner');
+});
+```
+
+### 1.2 Habit System
+**Habits Table**
+Defines the recurring tasks a user wants to perform.
+```php
+// 2025_12_28_212213_create_habits_table.php
+Schema::create('habits', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    $table->string('title');
+    $table->text('description')->nullable();
+    $table->enum('difficulty', ['easy', 'medium', 'hard'])->default('medium');
+    $table->integer('xp_reward')->default(50);
+    $table->enum('frequency', ['daily', 'weekly', 'monthly'])->default('daily');
+    $table->integer('current_streak')->default(0);
+    $table->integer('longest_streak')->default(0);
+    $table->integer('times_completed')->default(0);
+    $table->boolean('is_active')->default(true);
+    $table->string('color')->default('#a855f7');
+    $table->timestamps();
+});
+```
+
+**Habit Completions Table**
+A transactional log of every time a habit is finished. 
+*   `unique(['habit_id', 'completion_date'])`: Ensures a user can't complete the same daily habit twice in one day for double XP.
+```php
+// 2025_12_28_213233_create_habit_completions_table.php
+Schema::create('habit_completions', function (Blueprint $table) {
+    $table->id();
+    $table->date('completion_date');
+    $table->integer('xp_earned');
+    $table->text('notes')->nullable();
+    $table->foreignId('habit_id')->constrained()->onDelete('cascade');
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    $table->timestamps();
+    
+    $table->unique(['habit_id', 'completion_date']);
+});
+```
+
+### 1.3 Quest System
+**Quests Table**
+One-time challenges with deadlines.
+*   `type`: Distinguishes between daily tasks, weekly goals, and "boss" battles.
+```php
+// 2025_12_29_070809_create_quests_table.php
+Schema::create('quests', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    $table->string('title');
+    $table->enum('type', ['daily', 'weekly', 'monthly', 'boss'])->default('daily');
+    $table->enum('difficulty', ['easy', 'medium', 'hard', 'epic'])->default('medium');
+    $table->integer('xp_reward');
+    $table->enum('status', ['active', 'completed', 'failed', 'archived'])->default('active');
+    $table->date('due_date')->nullable();
+    $table->integer('progress')->default(0);
+    $table->integer('target')->default(1);
+    $table->timestamps();
+});
+```
+
+**Quest Completions Table**
+```php
+// 2025_12_29_072636_create_quest_completions_table.php
+Schema::create('quest_completions', function (Blueprint $table) {
+    $table->id();
+    $table->integer('xp_earned');
+    $table->timestamp('completed_at');
+    $table->foreignId('quest_id')->constrained()->onDelete('cascade');
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    $table->timestamps();
+});
+```
+
+### 1.4 Achievements & Badges (Advanced Gamification)
+**Badges Table**
+Defines collectible items (e.g., "Early Riser").
+```php
+// 2025_12_29_074127_create_badges_table.php
+Schema::create('badges', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('slug')->unique();
+    $table->text('description');
+    $table->string('icon');
+    $table->enum('rarity', ['common', 'rare', 'epic', 'legendary'])->default('common');
+    $table->integer('required_value')->nullable();
+    $table->string('requirement_type')->nullable(); // e.g., 'streak'
+    $table->timestamps();
+});
+```
+
+**User Badges Table (Pivot)**
+Connects Users to the Badges they have earned.
+```php
+// 2025_12_29_080321_create_user_badges_table.php
+Schema::create('user_badges', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    $table->foreignId('badge_id')->constrained()->onDelete('cascade');
+    $table->timestamp('awarded_at');
+    $table->timestamps();
+    $table->unique(['user_id', 'badge_id']);
+});
+```
+
+**Achievements Table**
+Milestones tracked by the system.
+```php
+// 2025_12_29_090651_create_achievements_table.php
+Schema::create('achievements', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('slug')->unique();
+    $table->text('description');
+    $table->string('icon');
+    $table->integer('xp_reward')->default(0);
+    $table->string('requirement_type');
+    $table->integer('requirement_value')->nullable();
+    $table->timestamps();
+});
+```
+
+**User Achievements Table (Pivot)**
+```php
+// 2025_12_29_141733_create_user_achievements_table.php
+Schema::create('user_achievements', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    $table->foreignId('achievement_id')->constrained()->onDelete('cascade');
+    $table->integer('progress')->default(0);
+    $table->boolean('is_completed')->default(false);
+    $table->timestamp('completed_at')->nullable();
+    $table->timestamps();
+});
+```
+
+### 1.5 Social Features
+**Guilds Table**
+Groups for users to collaborate.
+```php
+// 2025_12_29_082046_create_guilds_table.php
+Schema::create('guilds', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('slug')->unique();
+    $table->integer('member_count')->default(0);
+    $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
+    $table->timestamps();
+});
+```
+
+**Guild Members Table**
+```php
+// 2025_12_29_082113_create_guild_members_table.php
+Schema::create('guild_members', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('guild_id')->constrained()->onDelete('cascade');
+    $table->foreignId('user_id')->constrained()->onDelete('cascade');
+    $table->enum('role', ['owner', 'admin', 'member'])->default('member');
+    $table->integer('contribution_xp')->default(0);
+    $table->timestamps();
+    $table->unique(['guild_id', 'user_id']);
+});
+```
+
+---
+
+## 2. Eloquent Models
+
+Models define the **behavior** and **relationships** for each database table. They encapsulate business logic such as XP calculations and streak tracking.
+
+### 2.1 User Model
+**File:** [app/Models/User.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/User.php)
+The central model for players. It manages gamification state and defines relationships to all user-owned entities.
+*   **Key Logic:** [addXP()](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/User.php#121-135) adds experience and automatically triggers level-ups. [updateStreak()](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/User.php#141-161) manages daily login consistency.
+```php
+class User extends Authenticatable
+{
+    protected $fillable = [
+        'name', 'email', 'password', 'role',
+        'level', 'xp', 'total_xp', 'xp_to_next_level',
+        'current_streak', 'longest_streak', 'last_activity_date', 'rank_title',
+    ];
+
+    // --- Relationships ---
+    public function habits() { return $this->hasMany(Habit::class); }
+    public function quests() { return $this->hasMany(Quest::class); }
+    public function badges() { return $this->belongsToMany(Badge::class, 'user_badges')->withPivot('earned_at'); }
+    public function achievements() { return $this->belongsToMany(Achievement::class, 'user_achievements')->withPivot('progress', 'is_completed'); }
+    public function guilds() { return $this->belongsToMany(Guild::class, 'guild_members')->withPivot('role', 'contribution_xp'); }
+
+    // --- Core Game Logic ---
+    public function addXP(int $amount): void
+    {
+        $this->xp += $amount;
+        $this->total_xp += $amount;
+        while ($this->xp >= $this->xp_to_next_level) {
+            $this->xp -= $this->xp_to_next_level;
+            $this->level++;
+            $this->xp_to_next_level = $this->calculateNextLevelXP();
+        }
+        $this->save();
+    }
+
+    public function calculateNextLevelXP(): int
+    {
+        return (int) floor(1000 * pow(1.2, $this->level - 1));
+    }
+
+    public function updateStreak(): void
+    {
+        $today = now()->toDateString();
+        $yesterday = now()->subDay()->toDateString();
+        if ($this->last_activity_date === $yesterday) {
+            $this->current_streak++;
+        } elseif ($this->last_activity_date !== $today) {
+            $this->current_streak = 1;
+        }
+        $this->last_activity_date = $today;
+        $this->save();
+    }
+}
+```
+
+### 2.2 Habit Model
+**File:** [app/Models/Habit.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/Habit.php)
+Represents a recurring task. The [complete()](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/QuestController.php#111-131) method is called when a user finishes a habit.
+*   **Key Logic:** [complete()](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/QuestController.php#111-131) creates a transactional log, increments streaks, and awards XP to the user.
+```php
+class Habit extends Model
+{
+    protected $fillable = [
+        'user_id', 'title', 'description', 'difficulty', 
+        'xp_reward', 'frequency', 'current_streak', 'longest_streak',
+    ];
+
+    public function user() { return $this->belongsTo(User::class); }
+    public function completions() { return $this->hasMany(HabitCompletion::class); }
+
+    public function complete(): HabitCompletion
+    {
+        $completion = $this->completions()->create([
+            'user_id' => $this->user_id,
+            'completion_date' => now()->toDateString(),
+            'xp_earned' => $this->xp_reward,
+        ]);
+        $this->increment('times_completed');
+        $this->increment('current_streak');
+        $this->user->addXP($this->xp_reward);
+        $this->user->updateStreak();
+        return $completion;
+    }
+}
+```
+
+### 2.3 Quest Model
+**File:** [app/Models/Quest.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/Quest.php)
+Represents a one-time challenge with a deadline and progress tracking.
+```php
+class Quest extends Model
+{
+    protected $fillable = [
+        'user_id', 'title', 'type', 'difficulty', 
+        'xp_reward', 'status', 'due_date', 'progress', 'target',
+    ];
+
+    public function user() { return $this->belongsTo(User::class); }
+    public function completions() { return $this->hasMany(QuestCompletion::class); }
+
+    public function complete(): QuestCompletion
+    {
+        $completion = $this->completions()->create([
+            'user_id' => $this->user_id,
+            'xp_earned' => $this->xp_reward,
+            'completed_at' => now(),
+        ]);
+        $this->update(['status' => 'completed', 'completed_at' => now()]);
+        $this->user->addXP($this->xp_reward);
+        return $completion;
+    }
+}
+```
+
+### 2.4 HabitCompletion Model
+**File:** [app/Models/HabitCompletion.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/HabitCompletion.php)
+A transactional record for each habit completion event.
+```php
+class HabitCompletion extends Model
+{
+    protected $fillable = ['habit_id', 'user_id', 'completion_date', 'xp_earned'];
+
+    public function habit() { return $this->belongsTo(Habit::class); }
+    public function user() { return $this->belongsTo(User::class); }
+}
+```
+
+### 2.5 QuestCompletion Model
+**File:** [app/Models/QuestCompletion.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/QuestCompletion.php)
+A transactional record for each quest completion event.
+```php
+class QuestCompletion extends Model
+{
+    protected $fillable = ['quest_id', 'user_id', 'xp_earned', 'completed_at'];
+
+    public function quest() { return $this->belongsTo(Quest::class); }
+    public function user() { return $this->belongsTo(User::class); }
+}
+```
+
+### 2.6 Badge Model
+**File:** [app/Models/Badge.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/Badge.php)
+Defines collectible rewards. The [checkAndAward()](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/Achievement.php#38-77) method automatically grants badges when requirements are met.
+```php
+class Badge extends Model
+{
+    protected $fillable = ['name', 'slug', 'description', 'icon', 'rarity', 'required_value', 'requirement_type'];
+
+    public function users() { return $this->belongsToMany(User::class, 'user_badges')->withPivot('earned_at'); }
+
+    public function checkAndAward(User $user): bool
+    {
+        if ($user->badges()->where('badge_id', $this->id)->exists()) return false;
+        $meetsRequirement = match($this->requirement_type) {
+            'streak' => $user->current_streak >= $this->required_value,
+            'level' => $user->level >= $this->required_value,
+            default => false,
+        };
+        if ($meetsRequirement) {
+            $user->badges()->attach($this->id, ['earned_at' => now()]);
+            return true;
+        }
+        return false;
+    }
+}
+```
+
+### 2.7 Achievement Model
+**File:** [app/Models/Achievement.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/Achievement.php)
+Defines milestones. Similar to Badges but tracks progress towards a goal.
+```php
+class Achievement extends Model
+{
+    protected $fillable = ['name', 'slug', 'description', 'icon', 'xp_reward', 'requirement_type', 'requirement_value'];
+
+    public function users() { return $this->belongsToMany(User::class, 'user_achievements')->withPivot('progress', 'is_completed'); }
+
+    public function checkAndAward(User $user): bool
+    {
+        // Logic to check requirements and award XP
+        $meetsRequirement = match($this->requirement_type) {
+            'first_habit' => $user->habits()->count() >= 1,
+            'level' => $user->level >= $this->requirement_value,
+            default => false,
+        };
+        if ($meetsRequirement) {
+            $user->achievements()->syncWithoutDetaching([$this->id => ['is_completed' => true, 'completed_at' => now()]]);
+            $user->addXP($this->xp_reward);
+            return true;
+        }
+        return false;
+    }
+}
+```
+
+### 2.8 Guild Model
+**File:** [app/Models/Guild.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Models/Guild.php)
+Represents a social group for users to collaborate.
+```php
+class Guild extends Model
+{
+    protected $fillable = ['name', 'slug', 'description', 'owner_id', 'member_count', 'max_members'];
+
+    public function owner() { return $this->belongsTo(User::class, 'owner_id'); }
+    public function members() { return $this->belongsToMany(User::class, 'guild_members')->withPivot('role', 'contribution_xp'); }
+
+    public function addMember(User $user, string $role = 'member'): void
+    {
+        $this->members()->attach($user->id, ['role' => $role, 'joined_at' => now()]);
+        $this->increment('member_count');
+    }
+}
+```
+
+---
+
+## 3. Controllers
+
+Controllers handle HTTP requests, validate input, call Model methods, and return responses. They act as the "Traffic Cops" between the User and the Database.
+
+### 3.1 HabitController
+**File:** [app/Http/Controllers/HabitController.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/HabitController.php)
+Manages the full lifecycle of user habits (CRUD + toggle completion).
+```php
+class HabitController extends Controller
+{
+    public function index(Request $request)
+    {
+        $habits = $request->user()->getTodayHabits();
+        return view('habits.index', ['habits' => $habits]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'xp_reward' => 'required|integer|min:1|max:1000',
+            'frequency' => 'nullable|in:daily,weekly',
+        ]);
+        Habit::create([
+            'user_id' => $request->user()->id,
+            'title' => $validated['title'],
+            'xp_reward' => $validated['xp_reward'],
+        ]);
+        return redirect()->back()->with('success', 'Habit created!');
+    }
+
+    public function toggle(Request $request, Habit $habit): RedirectResponse
+    {
+        if ($habit->user_id !== $request->user()->id) abort(403);
+        
+        $existing = $habit->completions()->where('completion_date', today())->first();
+        if ($existing) {
+            $existing->delete();
+            $habit->decrement('current_streak');
+        } else {
+            $habit->complete();
+        }
+        return redirect()->back();
+    }
+
+    public function destroy(Request $request, Habit $habit): RedirectResponse
+    {
+        if ($habit->user_id !== $request->user()->id) abort(403);
+        $habit->delete();
+        return redirect()->back()->with('success', 'Habit deleted!');
+    }
+}
+```
+
+### 3.2 QuestController
+**File:** [app/Http/Controllers/QuestController.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/QuestController.php)
+Manages quests with deadline tracking and difficulty-based XP multipliers.
+```php
+class QuestController extends Controller
+{
+    public function index(Request $request)
+    {
+        $userId = $request->user()->id;
+        $dailyQuests = Quest::where('user_id', $userId)->where('type', 'daily')->get();
+        $weeklyQuests = Quest::where('user_id', $userId)->where('type', 'weekly')->get();
+        $bossQuests = Quest::where('user_id', $userId)->where('type', 'boss')->get();
+        return view('quests.index', compact('dailyQuests', 'weeklyQuests', 'bossQuests'));
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'type' => 'required|in:daily,weekly,boss',
+            'xp_reward' => 'required|integer|min:1|max:5000',
+            'difficulty' => 'required|in:easy,medium,hard',
+        ]);
+        // Difficulty Multiplier
+        $multiplier = match ($validated['difficulty']) {
+            'easy' => 1, 'medium' => 1.5, 'hard' => 2, default => 1,
+        };
+        Quest::create([
+            'user_id' => $request->user()->id,
+            'xp_reward' => (int) ($validated['xp_reward'] * $multiplier),
+            // ... other fields
+        ]);
+        return redirect()->back()->with('success', 'Quest created!');
+    }
+
+    public function complete(Request $request, Quest $quest): RedirectResponse
+    {
+        if ($quest->user_id !== $request->user()->id) abort(403);
+        if ($quest->status !== 'completed') {
+            $quest->complete();
+            $request->user()->updateStreak();
+        }
+        return redirect()->back()->with('success', 'Quest completed! XP awarded!');
+    }
+}
+```
+
+### 3.3 DashboardController
+**File:** [app/Http/Controllers/DashboardController.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/DashboardController.php)
+Aggregates user data for the main dashboard view.
+```php
+class DashboardController extends Controller
+{
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        return view('dashboard', [
+            'user' => [
+                'name' => $user->name,
+                'level' => $user->level,
+                'currentXp' => $user->xp,
+                'xpForNextLevel' => $user->xp_to_next_level,
+                'currentStreak' => $user->current_streak,
+            ],
+            'habits' => $user->getTodayHabits(),
+            'activeQuests' => $user->getActiveQuests(),
+        ]);
+    }
+}
+```
+
+### 3.4 ProfileController
+**File:** [app/Http/Controllers/ProfileController.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/ProfileController.php)
+Handles user profile updates and account deletion.
+```php
+class ProfileController extends Controller
+{
+    public function edit(Request $request): View
+    {
+        return view('profile.edit', ['user' => $request->user()]);
+    }
+
+    public function update(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->fill($request->validated());
+        $request->user()->save();
+        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    public function destroy(Request $request): RedirectResponse
+    {
+        $request->validateWithBag('userDeletion', ['password' => ['required', 'current_password']]);
+        $user = $request->user();
+        Auth::logout();
+        $user->delete();
+        return Redirect::to('/');
+    }
+}
+```
+
+### 3.5 Admin Controllers
+**File:** [app/Http/Controllers/Admin/AdminDashboardController.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/Admin/AdminDashboardController.php)
+Displays platform-wide statistics for administrators.
+```php
+class AdminDashboardController extends Controller
+{
+    public function index()
+    {
+        $stats = [
+            'totalUsers' => User::count(),
+            'activeUsers' => User::where('last_activity_date', '>=', now()->subDays(7))->count(),
+            'totalHabits' => Habit::count(),
+            'totalXpAwarded' => User::sum('total_xp'),
+        ];
+        $topUsers = User::orderBy('level', 'desc')->take(10)->get();
+        return view('admin.dashboard', compact('stats', 'topUsers'));
+    }
+}
+```
+
+**File:** [app/Http/Controllers/Admin/UserManagementController.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/app/Http/Controllers/Admin/UserManagementController.php)
+Provides CRUD and ban/unban functionality for user accounts.
+```php
+class UserManagementController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = User::query();
+        if ($request->has('search')) {
+            $query->where('name', 'like', "%{$request->search}%");
+        }
+        $users = $query->paginate(15);
+        return view('admin.users.index', ['users' => $users]);
+    }
+
+    public function toggleBan(User $user): RedirectResponse
+    {
+        $user->is_banned = !$user->is_banned;
+        $user->banned_at = $user->is_banned ? now() : null;
+        $user->save();
+        return redirect()->back()->with('success', $user->is_banned ? 'User banned.' : 'User unbanned.');
+    }
+
+    public function destroy(User $user): RedirectResponse
+    {
+        if ($user->id === Auth::user()->id) {
+            return redirect()->back()->with('error', 'Cannot delete own account.');
+        }
+        $user->delete();
+        return redirect()->route('admin.users.index')->with('success', 'User deleted!');
+    }
+}
+```
+
+---
+
+## 4. Application Routes
+
+Routes define the URL structure and map HTTP requests to Controller methods. They are protected by middleware for authentication and authorization.
+
+**File:** [routes/web.php](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/routes/web.php)
+
+### 4.1 Public Routes
+```php
+Route::get('/', [HomeController::class, 'index'])->name('home');
+```
+
+### 4.2 Authenticated User Routes
+Protected by `auth` and `verified` middleware.
+```php
+Route::middleware(['auth', 'verified'])->prefix('user')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::prefix('habits')->name('habits.')->group(function () {
+        Route::get('/', [HabitController::class, 'index'])->name('index');
+        Route::post('/', [HabitController::class, 'store'])->name('store');
+        Route::put('/{habit}', [HabitController::class, 'update'])->name('update');
+        Route::patch('/{habit}/toggle', [HabitController::class, 'toggle'])->name('toggle');
+        Route::delete('/{habit}', [HabitController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('quests')->name('quests.')->group(function () {
+        Route::get('/', [QuestController::class, 'index'])->name('index');
+        Route::post('/', [QuestController::class, 'store'])->name('store');
+        Route::put('/{quest}', [QuestController::class, 'update'])->name('update');
+        Route::patch('/{quest}/complete', [QuestController::class, 'complete'])->name('complete');
+        Route::delete('/{quest}', [QuestController::class, 'destroy'])->name('destroy');
+    });
+});
+```
+
+### 4.3 Profile Routes
+```php
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+```
+
+### 4.4 Admin Routes
+Protected by `auth`, `verified`, and `admin` middleware.
+```php
+Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [UserManagementController::class, 'index'])->name('index');
+        Route::get('/{user}', [UserManagementController::class, 'show'])->name('show');
+        Route::put('/{user}', [UserManagementController::class, 'update'])->name('update');
+        Route::patch('/{user}/toggle-ban', [UserManagementController::class, 'toggleBan'])->name('toggle-ban');
+        Route::delete('/{user}', [UserManagementController::class, 'destroy'])->name('destroy');
+    });
+});
+```
+
+---
+
+## 5. Frontend Design System
+
+The application uses a **Cyberpunk/Sci-Fi** aesthetic designed for immersive user engagement.
+
+### 5.1 Technology Stack
+| Layer | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Templates** | **Blade** | Laravel's templating engine for server-side rendering |
+| **Styling** | **Tailwind CSS 4.0** | Utility-first CSS framework |
+| **Interactivity** | **Alpine.js** | Lightweight JavaScript for modals and toggles |
+| **Build Tool** | **Vite** | Fast asset bundling with hot module replacement |
+
+### 5.2 Design Tokens (CSS Variables)
+**File:** [resources/css/app.css](file:///Users/root1/Desktop/U/Github/Self_Dev/self-development/DevelopmentSeed/resources/css/app.css)
+Custom CSS properties define the core palette and are used across all components.
+```css
+:root {
+    --bg-dark: #0a0a0f;
+    --bg-card: #12121a;
+    --accent-purple: #a855f7;
+    --accent-gold: #fbbf24;
+    --accent-green: #22c55e;
+    --text-primary: #ffffff;
+    --text-secondary: #9ca3af;
+}
+```
+
+### 5.3 Typography
+| Style | Font | Usage |
+| :--- | :--- | :--- |
+| **Display** | *Orbitron* | Level badges, Headers ("LEVEL UP!") |
+| **Body** | *Inter* | Task descriptions, UI text |
+
+### 5.4 Core CSS Components
+Custom reusable styles defined in `@layer components`.
+
+**Cards**
+```css
+.game-card {
+    @apply bg-[#12121a] rounded-xl border border-purple-500/20 p-6;
+}
+.habit-card {
+    @apply bg-[#12121a] rounded-xl border border-purple-500/20 p-4 flex items-center justify-between;
+}
+.habit-card.completed {
+    @apply border-green-500/30 bg-green-500/5;
+}
+```
+
+**Buttons**
+```css
+.btn-primary {
+    @apply px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-semibold rounded-lg;
+}
+.btn-danger {
+    @apply px-6 py-3 bg-red-600 text-white font-semibold rounded-lg;
+}
+```
+
+**XP Progress Bar**
+```css
+.xp-bar-container {
+    @apply w-full h-4 bg-[#1a1a25] rounded-full overflow-hidden;
+}
+.xp-bar-fill {
+    @apply h-full rounded-full transition-all duration-500;
+    background: linear-gradient(90deg, #a855f7, #ec4899);
+}
+```
+
+**Quest Badges**
+```css
+.quest-badge.daily { @apply bg-blue-500/20 text-blue-400; }
+.quest-badge.weekly { @apply bg-purple-500/20 text-purple-400; }
+.quest-badge.boss { @apply bg-red-500/20 text-red-400; }
+```
+
+### 5.5 Animations
+Custom keyframes for visual feedback.
+```css
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes levelUp {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); opacity: 1; }
+}
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-level-up { animation: levelUp 0.5s ease-out; }
+```
+
+### 5.6 Blade Components
+**Directory:** `resources/views/components/`
+16 reusable Blade components for consistent UI.
+| Component | Purpose |
+| :--- | :--- |
+| `app-layout` | Main authenticated layout (sidebar + content) |
+| `guest-layout` | Unauthenticated layout (login/register) |
+| `admin-layout` | Admin panel layout |
+| `primary-button` | Styled submit button |
+| `modal` | Reusable modal dialog |
+| `dropdown` | Navigation dropdown menu |
+
+### 5.7 Key Views
+| View | Description |
+| :--- | :--- |
+| `dashboard.blade.php` | User homepage: Level, XP bar, Today's Habits, Active Quests |
+| `habits/index.blade.php` | Habit management with inline create/edit forms |
+| `quests/index.blade.php` | Quest board with Daily/Weekly/Boss categories |
+| `admin/dashboard.blade.php` | Platform statistics and leaderboard |
